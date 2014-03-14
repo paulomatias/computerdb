@@ -1,3 +1,1 @@
-<%
-response.sendRedirect("dashboard.jsp");
-%>
+<%response.sendRedirect("/ProjetWebExcilys/DashboardServlet");%> 
