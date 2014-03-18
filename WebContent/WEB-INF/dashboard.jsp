@@ -25,7 +25,7 @@
 		<thead>
 			<tr>
 				<th><a
-					href="/ProjetWebExcilys/AffichageServlet?orderby=ASC"
+					href="/ProjetWebExcilys/AffichageServlet?orderby=}"
 					title="order by name"><c:out value="Computer Name" /></a></th>
 				<th><a
 					href="/ProjetWebExcilys/"

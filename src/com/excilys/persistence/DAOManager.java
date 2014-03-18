@@ -3,21 +3,35 @@ package com.excilys.persistence;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 
-public class ConnectionManager {
+public class DAOManager {
+	// DAOFactory + ConnectionManager + Class.forname();
+	private final static DAOManager instance = new DAOManager();
 	public final static String URL = "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull";
 	public final static String USER = "jee-cdb";
 	public final static String PASSWORD = "password";
-	private final static ConnectionManager instance = new ConnectionManager();
+	public final static String driverClass = "com.mysql.jdbc.Driver";
 
-	private ConnectionManager() {
+	static Logger log = LoggerFactory.getLogger(DAOManager.class.getName());
 
+	private DAOManager() {
 	}
 
-	public static ConnectionManager getInstance() {
+	synchronized public static DAOManager getInstance() {
 		return instance;
+	}
+
+	public ComputerDAO getDAOComputer() {
+		return ComputerDAO.getInstance();
+	}
+
+	public CompanyDAO getDAOCompany() {
+		return CompanyDAO.getInstance();
 	}
 
 	private static BoneCP connectionPool = null;
@@ -25,7 +39,7 @@ public class ConnectionManager {
 
 	public static void initialize() {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName(driverClass);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -49,9 +63,8 @@ public class ConnectionManager {
 			try {
 				connection = connectionPool.getConnection();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} // fetch a connection
+			}
 		return connection;
 	}
 }

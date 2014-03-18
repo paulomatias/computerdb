@@ -94,8 +94,6 @@ public class SelectComputerServlet extends HttpServlet {
 		request.setAttribute(ATT_LIST_COMPUTERS, listComputers);
 		request.setAttribute(ATT_NBR_COMPUTERS, nbrComputers);
 		request.setAttribute(ATT_MESSAGE, message);
-		System.out.println("select " + computerName);
-		System.out.println("slecet " + computerCompanyName);
 		this.getServletContext().getRequestDispatcher(VIEW)
 				.forward(request, response);
 
