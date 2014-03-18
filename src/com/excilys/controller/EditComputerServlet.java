@@ -20,12 +20,12 @@ import com.excilys.service.ComputerService;
 public class EditComputerServlet extends HttpServlet {
 	/* champ JSP, attribut de requête et vue */
 	public static final String PARAM_COMPUTER_ID = "id";
-	public static final String PARAM_NAME = "name";
-	public static final String PARAM_INTRODUCED = "introducedDate";
-	public static final String PARAM_DISCONTINUED = "discontinuedDate";
+	public static final String PARAM_NAME = "computerName";
+	public static final String PARAM_INTRODUCED = "introduced";
+	public static final String PARAM_DISCONTINUED = "discontinued";
 	public static final String PARAM_COMPANY = "company";
 	public static final String ATT_ID = "computerId";
-	public static final String ATT_NAME = "name";
+	public static final String ATT_NAME = "computerName";
 	public static final String ATT_INTRODUCED = "introduced";
 	public static final String ATT_DISCONTINUED = "discontinued";
 	public static final String ATT_COMPANY_NAME = "companyName";
@@ -35,9 +35,8 @@ public class EditComputerServlet extends HttpServlet {
 	public static final String ATT_NBR_COMPUTERS = "nbrComputers";
 	public static final String ATT_CURRENT_PAGE = "currentPage";
 	public static final String ATT_NBR_OF_PAGE = "nbrOfPages";
-	public static final int recordsPerPage = 25;
 	public static final String VIEW_GET = "/WEB-INF/editComputer.jsp";
-	public static final String VIEW_POST = "/WEB-INF/dashboard.jsp";
+	public static final String VIEW_POST = "/DisplayServlet";
 	public static final SimpleDateFormat DateFormatter = new SimpleDateFormat(
 			"yyyy-MM-dd");
 
@@ -54,13 +53,21 @@ public class EditComputerServlet extends HttpServlet {
 		Date discontinued = computer.getDiscontinued();
 		String companyName = computer.getCompany().getName();
 		List<Company> listCompanies = companyService.getList();
-		String introducedDate = DateFormatter.format(introduced);
-		String discontinuedDate = DateFormatter.format(discontinued);
+
+		if (introduced != null) {
+			String introducedDate = DateFormatter.format(introduced);
+			request.setAttribute(ATT_INTRODUCED, introducedDate);
+		}
+
+		if (discontinued != null) {
+			String discontinuedDate = DateFormatter.format(discontinued);
+			request.setAttribute(ATT_DISCONTINUED, discontinuedDate);
+		}
+
 		request.setAttribute(ATT_LIST_COMPANIES, listCompanies);
 		request.setAttribute(ATT_ID, id);
 		request.setAttribute(ATT_NAME, name);
-		request.setAttribute(ATT_INTRODUCED, introducedDate);
-		request.setAttribute(ATT_DISCONTINUED, discontinuedDate);
+
 		request.setAttribute(ATT_COMPANY_NAME, companyName);
 		request.getRequestDispatcher(VIEW_GET).forward(request, response);
 	}
@@ -109,11 +116,12 @@ public class EditComputerServlet extends HttpServlet {
 
 		computerService.edit(computer);
 		List<Computer> listComputers = computerService.getList(page,
-				recordsPerPage);
+				DisplayServlet.recordsPerPage);
 
 		Long nbrComputers = computerService.count();
 		String message = "Computer edited successfully !";
-		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0 / recordsPerPage);
+		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+				/ DisplayServlet.recordsPerPage);
 
 		request.setAttribute(ATT_NBR_OF_PAGE, nbrOfPages);
 		request.setAttribute(ATT_CURRENT_PAGE, page);

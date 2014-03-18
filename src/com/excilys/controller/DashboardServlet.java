@@ -19,8 +19,7 @@ public class DashboardServlet extends HttpServlet {
 	public static final String ATT_MESSAGE = "message";
 	public static final String ATT_CURRENT_PAGE = "currentPage";
 	public static final String ATT_NBR_OF_PAGE = "nbrOfPages";
-	public static final String VIEW_POST = "/WEB-INF/dashboard.jsp";
-	public static final int recordsPerPage = 25;
+	public static final String VIEW = "/DisplayServlet";
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -31,10 +30,11 @@ public class DashboardServlet extends HttpServlet {
 
 		ComputerService computerService = ComputerService.getInstance();
 		List<Computer> listComputers = computerService.getList(page,
-				recordsPerPage);
+				DisplayServlet.recordsPerPage);
 		Long nbrComputers = computerService.count();
 		String message = "Welcome to your computer database !";
-		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0 / recordsPerPage);
+		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+				/ DisplayServlet.recordsPerPage);
 		/*
 		 * Ajout du bean et du message à l'objet requête et envoie de la vue par
 		 * forward
@@ -45,8 +45,7 @@ public class DashboardServlet extends HttpServlet {
 		request.setAttribute(ATT_NBR_COMPUTERS, nbrComputers);
 		request.setAttribute(ATT_MESSAGE, message);
 
-		this.getServletContext().getRequestDispatcher(VIEW_POST)
-				.forward(request, response);
+		request.getRequestDispatcher(VIEW).forward(request, response);
 
 	}
 }

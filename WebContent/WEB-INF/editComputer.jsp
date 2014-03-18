@@ -15,7 +15,7 @@
 			</thead>
 			<tbody>
 					<tr>
-						<td><c:out value="${name}"/></td>
+						<td><c:out value="${computerName}"/></td>
 						<td><c:out value="${introduced}"/></td>
 						<td><c:out value="${discontinued}"/></td>
 						<td><c:out value="${companyName} "/></td>
@@ -27,21 +27,21 @@
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
 				<div class="input">
-					<input type="text" name="name" />
+					<input type="text" name="computerName" />
 					<span class="help-inline">Required</span>
 				</div>
 			</div>	
 			<div class="clearfix">
 				<label for="introduced">Introduced date:</label>
 				<div class="input">
-					<input type="date" name="introducedDate" pattern="YY-dd-MM"/>
+					<input type="date" name="introduced" pattern="YY-dd-MM"/>
 					<span class="help-inline">YYYY-dd-MM</span>
 				</div>
 			</div>
 			<div class="clearfix">
 				<label for="discontinued">Discontinued date:</label>
 				<div class="input">
-					<input type="date" name="discontinuedDate" pattern="YY-dd-MM"/>
+					<input type="date" name="discontinued" pattern="YY-dd-MM"/>
 					<span class="help-inline">YYYY-dd-MM</span>
 				</div>
 			</div>

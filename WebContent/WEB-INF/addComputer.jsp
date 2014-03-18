@@ -10,21 +10,21 @@
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
 				<div class="input">
-					<input type="text" name="name" />
+					<input type="text" name="computerName" />
 					<span class="help-inline">Required</span>
 				</div>
 			</div>	
 			<div class="clearfix">
 				<label for="introduced">Introduced date:</label>
 				<div class="input">
-					<input type="date" name="introducedDate" pattern="YY-MM-dd"/>
+					<input type="date" name="introduced" pattern="YY-MM-dd"/>
 					<span class="help-inline">YYYY-MM-dd</span>
 				</div>
 			</div>
 			<div class="clearfix">
 				<label for="discontinued">Discontinued date:</label>
 				<div class="input">
-					<input type="date" name="discontinuedDate" pattern="YY-MM-dd"/>
+					<input type="date" name="discontinued" pattern="YY-MM-dd"/>
 					<span class="help-inline">YYYY-MM-dd</span>
 				</div>
 			</div>

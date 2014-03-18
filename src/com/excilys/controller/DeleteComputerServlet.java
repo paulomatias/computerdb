@@ -20,8 +20,7 @@ public class DeleteComputerServlet extends HttpServlet {
 	public static final String ATT_MESSAGE = "message";
 	public static final String ATT_CURRENT_PAGE = "currentPage";
 	public static final String ATT_NBR_OF_PAGE = "nbrOfPages";
-	public static final int recordsPerPage = 25;
-	public static final String VIEW_GET = "/WEB-INF/dashboard.jsp";
+	public static final String VIEW = "/DisplayServlet";
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -38,9 +37,11 @@ public class DeleteComputerServlet extends HttpServlet {
 		computer = computerService.get(Long.valueOf(ComputerId));
 		computer.setId(Long.valueOf(ComputerId));
 		computerService.delete(computer);
-		listComputers = computerService.getList(page, recordsPerPage);
+		listComputers = computerService.getList(page,
+				DisplayServlet.recordsPerPage);
 		Long nbrComputers = computerService.count();
-		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0 / recordsPerPage);
+		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+				/ DisplayServlet.recordsPerPage);
 		String message = "Computer deleted successfully !";
 		/*
 		 * Ajout du bean et du message à l'objet requête et envoie de la vue par
@@ -51,7 +52,7 @@ public class DeleteComputerServlet extends HttpServlet {
 		request.setAttribute(ATT_LIST_COMPUTERS, listComputers);
 		request.setAttribute(ATT_NBR_COMPUTERS, nbrComputers);
 		request.setAttribute(ATT_MESSAGE, message);
-		request.getRequestDispatcher(VIEW_GET).forward(request, response);
+		request.getRequestDispatcher(VIEW).forward(request, response);
 
 	}
 }
