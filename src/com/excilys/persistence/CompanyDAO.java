@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +11,8 @@ import com.excilys.domain.Company;
 
 public class CompanyDAO {
 	/* Query */
-	public static final String GET_ALL_COMPANIES = "SELECT id, name FROM `computer-database-db`.`company`;";
-	public static final String GET_COMPANY_NAME = "SELECT id, name FROM `computer-database-db`.`company` WHERE id=?;";
+	public static final String GET_ALL = "SELECT id, name FROM `computer-database-db`.`company`;";
+	public static final String GET_NAME = "SELECT id, name FROM `computer-database-db`.`company` WHERE id=?;";
 	/* Singleton */
 	private final static CompanyDAO instance = new CompanyDAO();
 
@@ -24,28 +23,13 @@ public class CompanyDAO {
 		return instance;
 	}
 
-	/* code to close connections */
-	public void closeConnection(Connection connection, ResultSet resultSet,
-			Statement statement) {
-		try {
-			if (resultSet != null)
-				resultSet.close();
-			if (resultSet != null)
-				statement.close();
-			if (connection != null)
-				connection.close();
-		} catch (SQLException e) {
-		}
-	}
-
-	public List<Company> getListCompanies() {
-		Connection connection = ConnectionManager.getConnection();
+	public List<Company> getList(Connection connection) {
 		List<Company> listCompanies = new ArrayList<Company>();
 		ResultSet resultSet = null;
 		PreparedStatement statement = null;
 
 		try {
-			statement = connection.prepareStatement(GET_ALL_COMPANIES);
+			statement = connection.prepareStatement(GET_ALL);
 			resultSet = statement.executeQuery();
 
 			while (resultSet.next()) {
@@ -58,19 +42,25 @@ public class CompanyDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			this.closeConnection(connection, resultSet, statement);
+			try {
+				if (resultSet != null)
+					resultSet.close();
+				if (statement != null)
+					statement.close();
+			} catch (SQLException e) {
+			}
 		}
+
 		return listCompanies;
 	}
 
-	public String getCompanyName(Long companyId) {
-		Connection connection = ConnectionManager.getConnection();
+	public String getName(Connection connection, Long companyId) {
 		String name = null;
 		ResultSet resultSet = null;
 		PreparedStatement statement = null;
 
 		try {
-			statement = connection.prepareStatement(GET_COMPANY_NAME);
+			statement = connection.prepareStatement(GET_NAME);
 			statement.setLong(1, companyId);
 			resultSet = statement.executeQuery();
 
@@ -81,7 +71,14 @@ public class CompanyDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			this.closeConnection(connection, resultSet, statement);
+			try {
+				if (resultSet != null)
+					resultSet.close();
+				if (statement != null)
+					statement.close();
+
+			} catch (SQLException e) {
+			}
 		}
 		return name;
 	}
