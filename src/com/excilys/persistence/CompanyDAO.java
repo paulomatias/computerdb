@@ -7,12 +7,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.domain.Company;
 
 public class CompanyDAO {
 	/* Query */
 	public static final String GET_ALL = "SELECT id, name FROM `computer-database-db`.`company`;";
 	public static final String GET_NAME = "SELECT id, name FROM `computer-database-db`.`company` WHERE id=?;";
+
+	/*
+	 * Logger
+	 */
+	static Logger log = LoggerFactory.getLogger(CompanyDAO.class.getName());
+
 	/* Singleton */
 	private final static CompanyDAO instance = new CompanyDAO();
 

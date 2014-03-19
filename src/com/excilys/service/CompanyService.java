@@ -4,13 +4,22 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.domain.Company;
 import com.excilys.persistence.CompanyDAO;
 import com.excilys.persistence.DAOManager;
 
 public class CompanyService {
 	private final static CompanyService instance = new CompanyService();
-	private static CompanyDAO companyDAO = CompanyDAO.getInstance();
+	private static DAOManager daoManager = DAOManager.getInstance();
+	private static CompanyDAO companyDAO = daoManager.getCompanyDAO();
+
+	/*
+	 * Logger
+	 */
+	static Logger log = LoggerFactory.getLogger(CompanyService.class.getName());
 
 	private CompanyService() {
 	}

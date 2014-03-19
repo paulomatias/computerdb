@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class DisplayServlet extends HttpServlet {
-
+	/* JSP Parameters, request attributes, views */
 	public static final String ID = "computerId";
 	public static final String NAME = "computerName";
 	public static final String INTRODUCED = "introduced";

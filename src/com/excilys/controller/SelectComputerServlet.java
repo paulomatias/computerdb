@@ -10,14 +10,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.domain.Computer;
 import com.excilys.service.ComputerService;
+import com.excilys.service.ServiceManager;
 
 @SuppressWarnings("serial")
 public class SelectComputerServlet extends HttpServlet {
-	/* champ JSP, attribut de requêteet vue */
+	/* JSP Parameters, request attributes, views */
 	public static final String PARAM_SEARCH_COMPUTER = "searchComputer";
 	public static final String PARAM_SEARCH_COMANY = "searchCompany";
 	public static final String PARAM_NAME = "computerName";
 	public static final String PARAM_COMPANY_NAME = "computerCompanyName";
+	public static final String PARAM_PAGE = "page";
+	public static final String PARAM_SEARCH = "search";
 	public static final String ATT_LIST_COMPUTERS = "listComputers";
 	public static final String ATT_NBR_COMPUTERS = "nbrComputers";
 	public static final String ATT_SEARCH_COMPUTER = "searchComputer";
@@ -26,25 +29,36 @@ public class SelectComputerServlet extends HttpServlet {
 	public static final String ATT_CURRENT_PAGE = "currentPage";
 	public static final String ATT_NBR_OF_PAGE = "nbrOfPages";
 	public static final String VIEW = "/WEB-INF/dashboard.jsp";
+	public static final ServiceManager serviceManager = ServiceManager
+			.getInstance();
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		int page = 1;
-		int search = 0;
-		if (request.getParameter("page") != null) {
-			page = Integer.parseInt(request.getParameter("page"));
-		}
-		if (request.getParameter("search") != null) {
-			search = Integer.parseInt(request.getParameter("search"));
-		}
-		ComputerService computerService = ComputerService.getInstance();
+		/*
+		 * Get instance of services by serviceManager
+		 */
+		ComputerService computerService = serviceManager.getComputerService();
 		List<Computer> listComputers = null;
 		String message = null;
 		Long nbrComputers = null;
 
+		/*
+		 * GetParameters
+		 */
+		int page = 1;
+		int search = 0;
+		if (request.getParameter(PARAM_PAGE) != null) {
+			page = Integer.parseInt(request.getParameter(PARAM_PAGE));
+		}
+		if (request.getParameter(PARAM_SEARCH) != null) {
+			search = Integer.parseInt(request.getParameter(PARAM_SEARCH));
+		}
 		String computerName = request.getParameter(PARAM_SEARCH_COMPUTER);
 		String computerCompanyName = request.getParameter(PARAM_SEARCH_COMANY);
 
+		/*
+		 * Tests ans set attributes
+		 */
 		if ((computerName.equals("") && computerCompanyName.equals(""))
 				|| search == 1) {
 			search = 1;
@@ -78,12 +92,11 @@ public class SelectComputerServlet extends HttpServlet {
 					.countByCompanyName(computerCompanyName);
 			message = "Computer(s) selected successfully !";
 		}
-
 		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
 				/ DisplayServlet.recordsPerPage);
+
 		/*
-		 * Ajout du bean et du message à l'objet requête et envoie de la vue par
-		 * forward
+		 * Set attributes and VIEW
 		 */
 		request.setAttribute(PARAM_NAME, computerName);
 		request.setAttribute(PARAM_COMPANY_NAME, computerCompanyName);

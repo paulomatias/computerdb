@@ -8,6 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.domain.Company;
 import com.excilys.domain.Computer;
 
@@ -26,6 +29,12 @@ public class ComputerDAO {
 	public static final String COUNT_BY_NAME_AND_COMPANY_NAME = "SELECT COUNT(*) FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE computer.name=? AND company.name=?";
 	public static final String GET_BY_COMPANY_NAME = "SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE company.name=? LIMIT ?,?;";
 	public static final String COUNT_BY_COMPANY_NAME = "SELECT COUNT(*) FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE company.name=? ;";
+
+	/*
+	 * Logger
+	 */
+	static Logger log = LoggerFactory.getLogger(ComputerDAO.class.getName());
+
 	/* Singleton */
 	private final static ComputerDAO instance = new ComputerDAO();
 

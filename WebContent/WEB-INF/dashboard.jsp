@@ -21,7 +21,6 @@
 	</div>
 	<p></p>
 	<table class="computers zebra-striped">
-	
 		<thead>
 			<tr>
 				<th><a

@@ -15,10 +15,11 @@ import com.excilys.domain.Company;
 import com.excilys.domain.Computer;
 import com.excilys.service.CompanyService;
 import com.excilys.service.ComputerService;
+import com.excilys.service.ServiceManager;
 
 @SuppressWarnings("serial")
 public class EditComputerServlet extends HttpServlet {
-	/* champ JSP, attribut de requête et vue */
+	/* JSP Parameters, request attributes, views */
 	public static final String PARAM_COMPUTER_ID = "id";
 	public static final String PARAM_NAME = "computerName";
 	public static final String PARAM_INTRODUCED = "introduced";
@@ -39,14 +40,27 @@ public class EditComputerServlet extends HttpServlet {
 	public static final String VIEW_POST = "/DisplayServlet";
 	public static final SimpleDateFormat DateFormatter = new SimpleDateFormat(
 			"yyyy-MM-dd");
+	public static final ServiceManager serviceManager = ServiceManager
+			.getInstance();
+	public static final int recordsPerPage = DisplayServlet.recordsPerPage;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		ComputerService computerService = ComputerService.getInstance();
-		CompanyService companyService = CompanyService.getInstance();
-		String computerId = request.getParameter(PARAM_COMPUTER_ID);
-		Computer computer = computerService.get(Long.valueOf(computerId));
+		/*
+		 * Get instance of services by serviceManager
+		 */
+		ComputerService computerService = serviceManager.getComputerService();
+		CompanyService companyService = serviceManager.getCompanyService();
 
+		/*
+		 * GetParameters
+		 */
+		String computerId = request.getParameter(PARAM_COMPUTER_ID);
+
+		/*
+		 * getting paramters of the computer to edit and prepare attributes
+		 */
+		Computer computer = computerService.get(Long.valueOf(computerId));
 		Long id = computer.getId();
 		String name = computer.getName();
 		Date introduced = computer.getIntroduced();
@@ -54,6 +68,9 @@ public class EditComputerServlet extends HttpServlet {
 		String companyName = computer.getCompany().getName();
 		List<Company> listCompanies = companyService.getList();
 
+		/*
+		 * Test to format dates
+		 */
 		if (introduced != null) {
 			String introducedDate = DateFormatter.format(introduced);
 			request.setAttribute(ATT_INTRODUCED, introducedDate);
@@ -64,31 +81,37 @@ public class EditComputerServlet extends HttpServlet {
 			request.setAttribute(ATT_DISCONTINUED, discontinuedDate);
 		}
 
+		/*
+		 * Set attributes and VIEW
+		 */
 		request.setAttribute(ATT_LIST_COMPANIES, listCompanies);
 		request.setAttribute(ATT_ID, id);
 		request.setAttribute(ATT_NAME, name);
-
 		request.setAttribute(ATT_COMPANY_NAME, companyName);
 		request.getRequestDispatcher(VIEW_GET).forward(request, response);
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		int page = 1;
-		if (request.getParameter("page") != null) {
-			page = Integer.parseInt(request.getParameter("page"));
-		}
-
+		/*
+		 * Get instance of services by serviceManager
+		 */
 		ComputerService computerService = ComputerService.getInstance();
 		Company company = new Company();
 		Computer computer = new Computer();
 
+		/*
+		 * GetParameters
+		 */
 		String computerId = request.getParameter(PARAM_COMPUTER_ID);
 		String name = request.getParameter(PARAM_NAME);
 		String introduced = request.getParameter(PARAM_INTRODUCED);
 		String discontinued = request.getParameter(PARAM_DISCONTINUED);
 		String companyId = request.getParameter(PARAM_COMPANY);
 
+		/*
+		 * Test to parse dates
+		 */
 		Date introducedDate = new Date();
 		Date discontinuedDate = new Date();
 		if (!introduced.equals("")) {
@@ -107,22 +130,35 @@ public class EditComputerServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+
+		/*
+		 * Setting computer and edit the db
+		 */
 		computer.setName(name);
 		computer.setIntroduced(introducedDate);
 		computer.setDiscontinued(discontinuedDate);
 		company.setId(new Long(companyId));
 		computer.setCompany(company);
 		computer.setId(Long.valueOf(computerId));
-
 		computerService.edit(computer);
-		List<Computer> listComputers = computerService.getList(page,
-				DisplayServlet.recordsPerPage);
 
+		/*
+		 * Prepare attributes
+		 */
+		int page = 1;
+		if (request.getParameter("page") != null) {
+			page = Integer.parseInt(request.getParameter("page"));
+		}
 		Long nbrComputers = computerService.count();
-		String message = "Computer edited successfully !";
 		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
 				/ DisplayServlet.recordsPerPage);
+		List<Computer> listComputers = computerService.getList(page,
+				DisplayServlet.recordsPerPage);
+		String message = "Computer edited successfully !";
 
+		/*
+		 * Set attributes and VIEW
+		 */
 		request.setAttribute(ATT_NBR_OF_PAGE, nbrOfPages);
 		request.setAttribute(ATT_CURRENT_PAGE, page);
 		request.setAttribute(ATT_LIST_COMPUTERS, listComputers);
