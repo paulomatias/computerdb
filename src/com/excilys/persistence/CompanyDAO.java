@@ -42,9 +42,8 @@ public class CompanyDAO {
 			resultSet = statement.executeQuery();
 
 			while (resultSet.next()) {
-				Company company = new Company();
-				company.setId(resultSet.getLong(1));
-				company.setName(resultSet.getString(2));
+				Company company = Company.builder().id(resultSet.getLong(1))
+						.name(resultSet.getString(2)).build();
 				listCompanies.add(company);
 			}
 

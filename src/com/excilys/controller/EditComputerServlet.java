@@ -97,8 +97,6 @@ public class EditComputerServlet extends HttpServlet {
 		 * Get instance of services by serviceManager
 		 */
 		ComputerService computerService = ComputerService.getInstance();
-		Company company = new Company();
-		Computer computer = new Computer();
 
 		/*
 		 * GetParameters
@@ -134,12 +132,11 @@ public class EditComputerServlet extends HttpServlet {
 		/*
 		 * Setting computer and edit the db
 		 */
-		computer.setName(name);
-		computer.setIntroduced(introducedDate);
-		computer.setDiscontinued(discontinuedDate);
-		company.setId(new Long(companyId));
-		computer.setCompany(company);
-		computer.setId(Long.valueOf(computerId));
+		Company company = Company.builder().id(new Long(companyId)).build();
+
+		Computer computer = Computer.builder().id(Long.valueOf(computerId))
+				.name(name).introduced(introducedDate)
+				.discontinued(discontinuedDate).company(company).build();
 		computerService.edit(computer);
 
 		/*

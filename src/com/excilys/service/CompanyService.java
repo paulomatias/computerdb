@@ -9,11 +9,12 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.domain.Company;
 import com.excilys.persistence.CompanyDAO;
-import com.excilys.persistence.DAOManager;
+import com.excilys.persistence.ConnectionManager;
+import com.excilys.persistence.DAOFactory;
 
 public class CompanyService {
 	private final static CompanyService instance = new CompanyService();
-	private static DAOManager daoManager = DAOManager.getInstance();
+	private static DAOFactory daoManager = DAOFactory.getInstance();
 	private static CompanyDAO companyDAO = daoManager.getCompanyDAO();
 
 	/*
@@ -29,7 +30,7 @@ public class CompanyService {
 	}
 
 	public List<Company> getList() {
-		Connection connection = DAOManager.getConnection();
+		Connection connection = ConnectionManager.getConnection();
 		List<Company> list = companyDAO.getList(connection);
 		try {
 			connection.close();
@@ -41,7 +42,7 @@ public class CompanyService {
 	}
 
 	public String getName(Long companyId) {
-		Connection connection = DAOManager.getConnection();
+		Connection connection = ConnectionManager.getConnection();
 		String name = companyDAO.getName(connection, companyId);
 		try {
 			connection.close();

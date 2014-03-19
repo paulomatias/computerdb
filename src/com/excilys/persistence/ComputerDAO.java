@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -29,7 +30,8 @@ public class ComputerDAO {
 	public static final String COUNT_BY_NAME_AND_COMPANY_NAME = "SELECT COUNT(*) FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE computer.name=? AND company.name=?";
 	public static final String GET_BY_COMPANY_NAME = "SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE company.name=? LIMIT ?,?;";
 	public static final String COUNT_BY_COMPANY_NAME = "SELECT COUNT(*) FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE company.name=? ;";
-
+	public static final SimpleDateFormat FORMAT = new SimpleDateFormat(
+			"YY-MM-dd");
 	/*
 	 * Logger
 	 */
@@ -57,16 +59,13 @@ public class ComputerDAO {
 			resultSet = statement.executeQuery();
 
 			while (resultSet.next()) {
-				Company company = new Company();
-				Computer computer = new Computer();
-
-				computer.setId(resultSet.getLong(1));
-				computer.setName(resultSet.getString(2));
-				computer.setIntroduced(resultSet.getDate(3));
-				computer.setDiscontinued(resultSet.getDate(4));
-				company.setId(resultSet.getLong(5));
-				company.setName(resultSet.getString(7));
-				computer.setCompany(company);
+				Company company = Company.builder().id(resultSet.getLong(5))
+						.name(resultSet.getString(7)).build();
+				Computer computer = Computer.builder().id(resultSet.getLong(1))
+						.name(resultSet.getString(2))
+						.introduced(resultSet.getDate(3))
+						.discontinued(resultSet.getDate(4)).company(company)
+						.build();
 				listComputers.add(computer);
 			}
 
@@ -99,16 +98,14 @@ public class ComputerDAO {
 			resultSet = statement.executeQuery();
 
 			while (resultSet.next()) {
-				Company company = new Company();
-				Computer computer = new Computer();
+				Company company = Company.builder().id(resultSet.getLong(1))
+						.name(resultSet.getString(2)).build();
+				Computer computer = Computer.builder().id(resultSet.getLong(1))
+						.name(resultSet.getString(2))
+						.introduced(resultSet.getDate(3))
+						.discontinued(resultSet.getDate(4)).company(company)
+						.build();
 
-				computer.setId(resultSet.getLong(1));
-				computer.setName(resultSet.getString(2));
-				computer.setIntroduced(resultSet.getDate(3));
-				computer.setDiscontinued(resultSet.getDate(4));
-				company.setId(resultSet.getLong(5));
-				company.setName(resultSet.getString(7));
-				computer.setCompany(company);
 				listComputers.add(computer);
 			}
 
@@ -185,18 +182,13 @@ public class ComputerDAO {
 			resultSet = statement.executeQuery();
 
 			while (resultSet.next()) {
-				Company company = new Company();
-				Computer computer = new Computer();
-
-				computer.setId(resultSet.getLong(1));
-				computer.setName(resultSet.getString(2));
-				computer.setIntroduced(resultSet.getDate(3));
-				computer.setDiscontinued(resultSet.getDate(4));
-				computer.setIntroduced(null);
-
-				company.setId(resultSet.getLong(5));
-				company.setName(resultSet.getString(7));
-				computer.setCompany(company);
+				Company company = Company.builder().id(resultSet.getLong(5))
+						.name(resultSet.getString(7)).build();
+				Computer computer = Computer.builder().id(resultSet.getLong(1))
+						.name(resultSet.getString(2))
+						.introduced(resultSet.getDate(3))
+						.discontinued(resultSet.getDate(4)).company(company)
+						.build();
 				listComputers.add(computer);
 			}
 
@@ -250,10 +242,8 @@ public class ComputerDAO {
 			statement = connection.prepareStatement(UPDATE);
 
 			statement.setString(1, computer.getName());
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-			statement.setString(2, formatter.format(computer.getIntroduced()));
-			statement
-					.setString(3, formatter.format(computer.getDiscontinued()));
+			statement.setString(2, FORMAT.format(computer.getIntroduced()));
+			statement.setString(3, FORMAT.format(computer.getDiscontinued()));
 			if (computer.getCompany().getId().equals(null)) {
 				statement.setLong(4, computer.getCompany().getId());
 			} else
@@ -317,26 +307,23 @@ public class ComputerDAO {
 			resultSet = statement.executeQuery();
 
 			while (resultSet.next()) {
-				Company company = new Company();
-				computer = new Computer();
-				SimpleDateFormat formatter = new SimpleDateFormat("YY-MM-dd");
-
-				computer.setId(resultSet.getLong(1));
-				computer.setName(resultSet.getString(2));
+				Date introduced;
+				Date discontinued;
 				if (resultSet.getString(3) != null) {
-					computer.setIntroduced(formatter.parse(resultSet
-							.getString(3)));
+					introduced = (FORMAT.parse(resultSet.getString(3)));
 				} else
-					computer.setIntroduced(null);
+					introduced = null;
 				if (resultSet.getString(4) != null) {
-					computer.setDiscontinued(formatter.parse(resultSet
-							.getString(4)));
+					discontinued = FORMAT.parse(resultSet.getString(4));
 				} else
-					computer.setIntroduced(null);
+					discontinued = null;
 
-				company.setId(resultSet.getLong(5));
-				company.setName(resultSet.getString(7));
-				computer.setCompany(company);
+				Company company = Company.builder().id(resultSet.getLong(5))
+						.name(resultSet.getString(7)).build();
+				computer = Computer.builder().id(resultSet.getLong(1))
+						.name(resultSet.getString(2)).introduced(introduced)
+						.discontinued(discontinued).company(company).build();
+
 			}
 
 		} catch (Exception e) {
@@ -372,27 +359,22 @@ public class ComputerDAO {
 			resultSet = statement.executeQuery();
 
 			while (resultSet.next()) {
-				Company company = new Company();
-				Computer computer = new Computer();
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-				computer.setId(resultSet.getLong(1));
-				computer.setName(resultSet.getString(2));
-
+				Date introduced;
+				Date discontinued;
 				if (resultSet.getString(3) != null) {
-					computer.setIntroduced(formatter.parse(resultSet
-							.getString(3)));
+					introduced = FORMAT.parse(resultSet.getString(3));
 				} else
-					computer.setIntroduced(null);
+					introduced = null;
 				if (resultSet.getString(4) != null) {
-					computer.setDiscontinued(formatter.parse(resultSet
-							.getString(4)));
+					discontinued = FORMAT.parse(resultSet.getString(4));
 				} else
-					computer.setIntroduced(null);
+					discontinued = null;
+				Company company = Company.builder().id(resultSet.getLong(5))
+						.name(resultSet.getString(7)).build();
+				Computer computer = Computer.builder().id(resultSet.getLong(1))
+						.name(resultSet.getString(2)).introduced(introduced)
+						.discontinued(discontinued).company(company).build();
 
-				company.setId(resultSet.getLong(5));
-				company.setName(resultSet.getString(7));
-				computer.setCompany(company);
 				listComputers.add(computer);
 			}
 
@@ -428,27 +410,22 @@ public class ComputerDAO {
 			resultSet = statement.executeQuery();
 
 			while (resultSet.next()) {
-				Company company = new Company();
-				Computer computer = new Computer();
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-				computer.setId(resultSet.getLong(1));
-				computer.setName(resultSet.getString(2));
-
+				Date introduced;
+				Date discontinued;
 				if (resultSet.getString(3) != null) {
-					computer.setIntroduced(formatter.parse(resultSet
-							.getString(3)));
+					introduced = FORMAT.parse(resultSet.getString(3));
 				} else
-					computer.setIntroduced(null);
+					introduced = null;
 				if (resultSet.getString(4) != null) {
-					computer.setDiscontinued(formatter.parse(resultSet
-							.getString(4)));
+					discontinued = FORMAT.parse(resultSet.getString(4));
 				} else
-					computer.setIntroduced(null);
+					discontinued = null;
 
-				company.setId(resultSet.getLong(5));
-				company.setName(resultSet.getString(7));
-				computer.setCompany(company);
+				Company company = Company.builder().id(resultSet.getLong(5))
+						.name(resultSet.getString(7)).build();
+				Computer computer = Computer.builder().id(resultSet.getLong(1))
+						.name(resultSet.getString(2)).introduced(introduced)
+						.discontinued(discontinued).company(company).build();
 				listComputers.add(computer);
 			}
 

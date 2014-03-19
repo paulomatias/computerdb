@@ -35,7 +35,7 @@ public class AddComputerServlet extends HttpServlet {
 	public static final String VIEW_GET = "/WEB-INF/addComputer.jsp";
 	public static final ServiceManager serviceManager = ServiceManager
 			.getInstance();
-	public static final SimpleDateFormat DateFormatter = new SimpleDateFormat(
+	public static final SimpleDateFormat FORMAT = new SimpleDateFormat(
 			"yyyy-MM-dd");
 	public static final int recordsPerPage = DisplayServlet.recordsPerPage;
 
@@ -63,10 +63,6 @@ public class AddComputerServlet extends HttpServlet {
 		 */
 		CompanyService companyService = serviceManager.getCompanyService();
 		ComputerService computerService = serviceManager.getComputerService();
-		Company company = new Company();
-		Computer computer = new Computer();
-		Date introducedDate = null;
-		Date discontinuedDate = null;
 
 		/*
 		 * GetParameters
@@ -79,16 +75,18 @@ public class AddComputerServlet extends HttpServlet {
 		/*
 		 * Test to parse dates
 		 */
+		Date introducedDate = null;
+		Date discontinuedDate = null;
 		if (!introduced.equals("")) {
 			try {
-				introducedDate = DateFormatter.parse(introduced);
+				introducedDate = FORMAT.parse(introduced);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 		}
 		if (!discontinued.equals("")) {
 			try {
-				discontinuedDate = DateFormatter.parse(discontinued);
+				discontinuedDate = FORMAT.parse(discontinued);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -96,12 +94,11 @@ public class AddComputerServlet extends HttpServlet {
 		/*
 		 * Setting computer and add to db
 		 */
-		computer.setName(name);
-		computer.setIntroduced(introducedDate);
-		computer.setDiscontinued(discontinuedDate);
-		company.setId(new Long(companyId));
-		company.setName(companyService.getName(company.getId()));
-		computer.setCompany(company);
+		Company company = Company.builder().id(new Long(companyId))
+				.name(companyService.getName(new Long(companyId))).build();
+		Computer computer = Computer.builder().name(name)
+				.introduced(introducedDate).discontinued(discontinuedDate)
+				.company(company).build();
 		computerService.add(computer);
 
 		/*

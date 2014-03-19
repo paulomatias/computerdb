@@ -33,7 +33,6 @@ public class DeleteComputerServlet extends HttpServlet {
 		 * Get instance of services by serviceManager
 		 */
 		ComputerService computerService = serviceManager.getComputerService();
-		Computer computer = new Computer();
 		/*
 		 * GetParameters
 		 */
@@ -48,8 +47,9 @@ public class DeleteComputerServlet extends HttpServlet {
 		Long nbrComputers = computerService.count();
 		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0 / recordsPerPage);
 		List<Computer> listComputers = computerService.getList();
-		computer = computerService.get(Long.valueOf(ComputerId));
-		computer.setId(Long.valueOf(ComputerId));
+		Computer computer = Computer.builder().id(Long.valueOf(ComputerId))
+				.build();
+		// computer = computerService.get(Long.valueOf(ComputerId));
 		computerService.delete(computer);
 		listComputers = computerService.getList(page,
 				DisplayServlet.recordsPerPage);
