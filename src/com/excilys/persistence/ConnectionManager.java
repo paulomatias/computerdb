@@ -8,11 +8,12 @@ import com.jolbox.bonecp.BoneCPConfig;
 
 public class ConnectionManager {
 
-	private static BoneCP connectionPool;
 	public final static String URL = "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull";
 	public final static String USER = "jee-cdb";
 	public final static String PASSWORD = "password";
 	public final static String driverClass = "com.mysql.jdbc.Driver";
+	private static ThreadLocal<Connection> connectionThread = new ThreadLocal<Connection>();
+	private static BoneCP connectionPool;
 
 	/*
 	 * Connection Pool Manager
@@ -41,6 +42,7 @@ public class ConnectionManager {
 			initialize();
 		}
 		try {
+			connectionThread.set(connectionPool.getConnection());
 			connection = connectionPool.getConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();

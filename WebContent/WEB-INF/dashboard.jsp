@@ -3,9 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <section id="main">
-	<h1 id="homeTitle">${message}</h1>
+	<h1 id="homeTitle">${wrapper.message}</h1>
 	<h2>
-		<c:out value="${nbrComputers}" />
+		<c:out value="${wrapper.nbrComputers}" />
 		Computer(s) found
 	</h2>
 	<div id="actions">
@@ -22,25 +22,49 @@
 	<p></p>
 	<table class="computers zebra-striped">
 		<thead>
-			<tr>
-				<th><a
-					href="/ProjetWebExcilys/AffichageServlet?orderby=}"
-					title="order by name"><c:out value="Computer Name" /></a></th>
-				<th><a
-					href="/ProjetWebExcilys/"
-					title="order by introduced date"><c:out value="Introduced Date" /></a></th>
-				<th><a
-					href="/ProjetWebExcilys/"
-					title="order by discontinued date"><c:out
-							value="Discontinued Date" /></a></th>
-				<th><a
-					href="/ProjetWebExcilys/"
-					title="order by company name"><c:out value="Company" /></a></th>
-				<th></th>
-			</tr>
+			<c:if
+				test="${wrapper.message=='Welcome to your computer database !' or wrapper.message=='Computer deleted successfully !' or wrapper.message=='Computer edited successfully !' or wrapper.message=='Computer added successfully !'}">
+				<tr>
+					<th><a
+						href="/ProjetWebExcilys/DashboardServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}&orderBy=${ wrapper.orderBy =='nameASC' ? 'nameDESC' : 'nameASC'}"
+						title="order by name"><c:out value="Computer Name" /></a></th>
+					<th><a
+						href="/ProjetWebExcilys/DashboardServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}&orderBy=${ wrapper.orderBy =='introducedASC' ? 'introducedDESC' : 'introducedASC'}"
+						title="order by introduced date"><c:out
+								value="Introduced Date" /></a></th>
+					<th><a
+						href="/ProjetWebExcilys/DashboardServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}&orderBy=${ wrapper.orderBy =='discontinuedASC' ? 'discontinuedDESC' : 'discontinuedASC'}"
+						title="order by discontinued date"><c:out
+								value="Discontinued Date" /></a></th>
+					<th><a
+						href="/ProjetWebExcilys/DashboardServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}&orderBy=${ wrapper.orderBy =='companyASC' ? 'companyDESC' : 'companyASC'}"
+						title="order by company"><c:out value="Company" /></a></th>
+					<th></th>
+				</tr>
+			</c:if>
+			<c:if
+				test="${wrapper.message=='Computer(s) selected successfully !'}">
+				<tr>
+					<th><a
+						href="/ProjetWebExcilys/SelectComputerServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='nameASC' ? 'nameDESC' : 'nameASC'}"
+						title="order by name"><c:out value="Computer Name" /></a></th>
+					<th><a
+						href="/ProjetWebExcilys/SelectComputerServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='introducedASC' ? 'introducedDESC' : 'introducedASC'}"
+						title="order by introduced date"><c:out
+								value="Introduced Date" /></a></th>
+					<th><a
+						href="/ProjetWebExcilys/SelectComputerServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='discontinuedASC' ? 'discontinuedDESC' : 'discontinuedASC'}"
+						title="order by discontinued date"><c:out
+								value="Discontinued Date" /></a></th>
+					<th><a
+						href="/ProjetWebExcilys/SelectComputerServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='companyASC' ? 'companyDESC' : 'companyASC'}"
+						title="order by company"><c:out value="Company" /></a></th>
+					<th></th>
+				</tr>
+			</c:if>
 		</thead>
 		<tbody>
-			<c:forEach items="${listComputers}" var="var">
+			<c:forEach items="${wrapper.listComputers}" var="var">
 				<tr>
 					<td><a
 						href="/ProjetWebExcilys/EditComputerServlet?id=${var.id}"

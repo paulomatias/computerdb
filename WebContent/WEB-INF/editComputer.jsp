@@ -15,19 +15,19 @@
 			</thead>
 			<tbody>
 					<tr>
-						<td><c:out value="${computerName}"/></td>
-						<td><c:out value="${introduced}"/></td>
-						<td><c:out value="${discontinued}"/></td>
-						<td><c:out value="${companyName} "/></td>
+						<td><c:out value="${wrapper.computer.name}"/></td>
+						<td><c:out value="${wrapper.computer.introduced}"/></td>
+						<td><c:out value="${wrapper.computer.discontinued}"/></td>
+						<td><c:out value="${wrapper.computer.company.name} "/></td>
 					</tr>
 			</tbody>
 		</table>
-	<form action="/ProjetWebExcilys/EditComputerServlet?id=${computerId}" method="POST">
+	<form action="/ProjetWebExcilys/EditComputerServlet?id=${wrapper.computer.id}" method="POST">
 		<fieldset>
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
 				<div class="input">
-					<input type="text" name="computerName" />
+					<input type="text" name="name" />
 					<span class="help-inline">Required</span>
 				</div>
 			</div>	
@@ -50,7 +50,7 @@
 				<div class="input">
 					<select name="company">
 						<option value="0">--</option>
-						<c:forEach items="${listCompanies}" var="var">
+						<c:forEach items="${wrapper.listCompanies}" var="var">
 							<option value="${var.id}">${var.name}</option>
 						</c:forEach>
 					</select>

@@ -22,6 +22,9 @@ public class CompanyService {
 	 */
 	static Logger log = LoggerFactory.getLogger(CompanyService.class.getName());
 
+	/*
+	 * Singleton
+	 */
 	private CompanyService() {
 	}
 
@@ -29,26 +32,56 @@ public class CompanyService {
 		return instance;
 	}
 
+	/*
+	 * Service
+	 */
 	public List<Company> getList() {
 		Connection connection = ConnectionManager.getConnection();
-		List<Company> list = companyDAO.getList(connection);
+		List<Company> list = null;
 		try {
-			connection.close();
+			connection.setAutoCommit(false);
+			log.info("Get list of companies");
+			list = companyDAO.getList(connection);
+			connection.commit();
 		} catch (SQLException e) {
-
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+
 		return list;
 	}
 
 	public String getName(Long companyId) {
 		Connection connection = ConnectionManager.getConnection();
-		String name = companyDAO.getName(connection, companyId);
+		String name = null;
 		try {
-			connection.close();
-		} catch (SQLException e) {
+			connection.setAutoCommit(false);
+			log.info("Get name of company");
+			name = companyDAO.getName(connection, companyId);
 
+		} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return name;
 	}
