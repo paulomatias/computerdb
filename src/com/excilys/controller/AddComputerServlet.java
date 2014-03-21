@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.domain.Company;
 import com.excilys.domain.Computer;
-import com.excilys.domain.Wrapper;
 import com.excilys.service.CompanyService;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
 import com.excilys.transfert.ComputerDTO;
+import com.excilys.wrapper.Wrapper;
 
 @SuppressWarnings("serial")
 public class AddComputerServlet extends HttpServlet {

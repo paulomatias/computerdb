@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.domain.Computer;
-import com.excilys.domain.Wrapper;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
+import com.excilys.wrapper.Wrapper;
 
 @SuppressWarnings("serial")
 public class DeleteComputerServlet extends HttpServlet {

@@ -1,6 +1,9 @@
-package com.excilys.domain;
+package com.excilys.wrapper;
 
 import java.util.List;
+
+import com.excilys.domain.Company;
+import com.excilys.domain.Computer;
 
 public class Wrapper {
 	public static final Integer RECORDS_PER_PAGE = 25;
