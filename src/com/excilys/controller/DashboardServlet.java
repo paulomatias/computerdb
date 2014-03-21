@@ -26,7 +26,6 @@ public class DashboardServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("dfezoihfe");
 		/*
 		 * Get instance of services by serviceManager
 		 */
