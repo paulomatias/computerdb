@@ -1,54 +1,64 @@
-package com.excilys.domain;
+package com.excilys.transfert;
 
-import java.util.Date;
-
-public class Computer {
+public class ComputerDTO {
 	protected Long id;
 	protected String name;
-	protected Date introduced;
-	protected Date discontinued;
-	protected Company company;
+	protected String introduced;
+	protected String discontinued;
+	protected Long company;
 
 	public static class Builder {
-		Computer computer;
+
+		ComputerDTO computerDTO;
 
 		private Builder() {
-			computer = new Computer();
+			computerDTO = new ComputerDTO();
+
 		}
 
 		public Builder id(Long id) {
+
 			if (id != null)
-				this.computer.id = id;
+				this.computerDTO.id = id;
 			return this;
 		}
 
 		public Builder name(String name) {
-			this.computer.name = name;
+
+			this.computerDTO.name = name;
+
 			return this;
 		}
 
-		public Builder introduced(Date introduced) {
-			this.computer.introduced = introduced;
+		public Builder introduced(String introduced) {
+
+			this.computerDTO.introduced = introduced;
+
 			return this;
 		}
 
-		public Builder discontinued(Date discontinued) {
-			this.computer.discontinued = discontinued;
+		public Builder discontinued(String discontinued) {
+
+			this.computerDTO.discontinued = discontinued;
+
 			return this;
 		}
 
-		public Builder company(Company company) {
-			this.computer.company = company;
+		public Builder company(Long company) {
+
+			this.computerDTO.company = company;
+
 			return this;
 		}
 
-		public Computer build() {
-			return this.computer;
+		public ComputerDTO build() {
+			return this.computerDTO;
 		}
 
 	}
 
 	public static Builder builder() {
+
 		return new Builder();
 	}
 
@@ -68,33 +78,33 @@ public class Computer {
 		this.name = name;
 	}
 
-	public Date getIntroduced() {
+	public String getIntroduced() {
 		return introduced;
 	}
 
-	public void setIntroduced(Date introduced) {
+	public void setIntroduced(String introduced) {
 		this.introduced = introduced;
 	}
 
-	public Date getDiscontinued() {
+	public String getDiscontinued() {
 		return discontinued;
 	}
 
-	public void setDiscontinued(Date discontinued) {
+	public void setDiscontinued(String discontinued) {
 		this.discontinued = discontinued;
 	}
 
-	public Company getCompany() {
+	public Long getCompany() {
 		return company;
 	}
 
-	public void setCompany(Company company) {
+	public void setCompany(Long company) {
 		this.company = company;
 	}
 
 	@Override
 	public String toString() {
-		return "Computer [id=" + id + ", name=" + name + ", introduced="
+		return "ComputerDTO [id=" + id + ", name=" + name + ", introduced="
 				+ introduced + ", discontinued=" + discontinued + ", company="
 				+ company + "]";
 	}
@@ -121,7 +131,7 @@ public class Computer {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Computer other = (Computer) obj;
+		ComputerDTO other = (ComputerDTO) obj;
 		if (company == null) {
 			if (other.company != null)
 				return false;
@@ -149,5 +159,4 @@ public class Computer {
 			return false;
 		return true;
 	}
-
 }

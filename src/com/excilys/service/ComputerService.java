@@ -2,6 +2,7 @@ package com.excilys.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,11 +12,13 @@ import com.excilys.domain.Computer;
 import com.excilys.persistence.ComputerDAO;
 import com.excilys.persistence.ConnectionManager;
 import com.excilys.persistence.DAOFactory;
+import com.excilys.transfert.ComputerDTO;
+import com.excilys.transfert.MapperDTO;
 
 public class ComputerService {
 	private final static ComputerService instance = new ComputerService();
-	private static DAOFactory daoManager = DAOFactory.getInstance();
-	private static ComputerDAO computerDAO = daoManager.getComputerDAO();
+	private static DAOFactory daoFactory = DAOFactory.getInstance();
+	private static ComputerDAO computerDAO = daoFactory.getComputerDAO();
 	static Logger log = LoggerFactory.getLogger(ComputerService.class);
 
 	private ComputerService() {
@@ -43,7 +46,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -69,7 +74,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -77,11 +84,18 @@ public class ComputerService {
 		return list;
 	}
 
-	public void add(Computer computer) {
+	public void add(ComputerDTO computerDTO) {
 		Connection connection = ConnectionManager.getConnection();
 		try {
 			connection.setAutoCommit(false);
 			log.info("Add computer");
+			MapperDTO mapper = new MapperDTO();
+			Computer computer = null;
+			try {
+				computer = mapper.toComputer(computerDTO);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			computerDAO.add(connection, computer);
 			connection.commit();
 		} catch (SQLException e) {
@@ -93,7 +107,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -119,7 +135,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -144,18 +162,27 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public void edit(Computer computer) {
+	public void edit(ComputerDTO computerDTO) {
 		Connection connection = ConnectionManager.getConnection();
 		try {
 			connection.setAutoCommit(false);
-			log.info("Get list of computers");
+			log.info("Edit list of computers");
+			MapperDTO mapper = new MapperDTO();
+			Computer computer = null;
+			try {
+				computer = mapper.toComputer(computerDTO);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			computerDAO.edit(connection, computer);
 			connection.commit();
 		} catch (SQLException e) {
@@ -167,7 +194,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -192,7 +221,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -206,7 +237,11 @@ public class ComputerService {
 		try {
 			connection.setAutoCommit(false);
 			log.info("Get a computer with id");
-			computer = computerDAO.get(connection, computerId);
+			try {
+				computer = computerDAO.get(connection, computerId);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -217,7 +252,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -247,7 +284,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -275,7 +314,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -301,7 +342,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -328,7 +371,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -354,7 +399,9 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

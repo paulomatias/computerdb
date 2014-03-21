@@ -1,9 +1,6 @@
 package com.excilys.controller;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -17,6 +14,7 @@ import com.excilys.domain.Wrapper;
 import com.excilys.service.CompanyService;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
+import com.excilys.transfert.ComputerDTO;
 
 @SuppressWarnings("serial")
 public class EditComputerServlet extends HttpServlet {
@@ -31,8 +29,7 @@ public class EditComputerServlet extends HttpServlet {
 	public static final String ATT_WRAPPER = "wrapper";
 	public static final String VIEW_GET = "/WEB-INF/editComputer.jsp";
 	public static final String VIEW_POST = "/WEB-INF/dashboard.jsp";
-	public static final SimpleDateFormat FORMAT = new SimpleDateFormat(
-			"yyyy-MM-dd");
+
 	public static final ServiceManager serviceManager = ServiceManager
 			.getInstance();
 	public static final int recordsPerPage = Wrapper.RECORDS_PER_PAGE;
@@ -77,33 +74,14 @@ public class EditComputerServlet extends HttpServlet {
 		ComputerService computerService = ComputerService.getInstance();
 
 		/*
-		 * Test to parse dates
-		 */
-		Date introducedDate = null;
-		Date discontinuedDate = null;
-		if (!introduced.equals("")) {
-			try {
-				introducedDate = FORMAT.parse(introduced);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
-		if (!discontinued.equals("")) {
-			try {
-				discontinuedDate = FORMAT.parse(discontinued);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
-		/*
 		 * Setting computer and edit the db
 		 */
-		Company company = Company.builder().id(new Long(companyId)).build();
+		ComputerDTO computerDTO = ComputerDTO.builder()
+				.id(Long.valueOf(computerId)).name(name).introduced(introduced)
+				.discontinued(discontinued).company(new Long(companyId))
+				.build();
 
-		Computer computer = Computer.builder().id(Long.valueOf(computerId))
-				.name(name).introduced(introducedDate)
-				.discontinued(discontinuedDate).company(company).build();
-		computerService.edit(computer);
+		computerService.edit(computerDTO);
 
 		/*
 		 * Prepare attributes

@@ -12,22 +12,25 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.domain.Company;
 
-public class CompanyDAO {
-	/*
-	 * Logger
-	 */
-	static Logger log = LoggerFactory.getLogger(CompanyDAO.class.getName());
-
-	/* Singleton */
-	private final static CompanyDAO instance = new CompanyDAO();
+/* Singleton : enum will ensure that we really have a singleton (otherwise, a exploit can be done with the JVM to duplicate objects */
+public enum CompanyDAO {
+	INSTANCE;
 
 	private CompanyDAO() {
 	}
 
 	public static CompanyDAO getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
+	/*
+	 * Logger
+	 */
+	static Logger log = LoggerFactory.getLogger(CompanyDAO.class.getName());
+
+	/*
+	 * Functions
+	 */
 	public List<Company> getList(Connection connection) throws SQLException {
 
 		String GET_ALL = "SELECT id, name FROM `computer-database-db`.`company`;";

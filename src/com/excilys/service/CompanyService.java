@@ -14,8 +14,8 @@ import com.excilys.persistence.DAOFactory;
 
 public class CompanyService {
 	private final static CompanyService instance = new CompanyService();
-	private static DAOFactory daoManager = DAOFactory.getInstance();
-	private static CompanyDAO companyDAO = daoManager.getCompanyDAO();
+	private static DAOFactory daoFactory = DAOFactory.getInstance();
+	private static CompanyDAO companyDAO = daoFactory.getCompanyDAO();
 
 	/*
 	 * Logger
@@ -52,7 +52,9 @@ public class CompanyService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -78,7 +80,9 @@ public class CompanyService {
 			}
 		} finally {
 			try {
-				connection.close();
+				if (connection != null) {
+					connection.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

@@ -34,7 +34,6 @@ public class DashboardServlet extends HttpServlet {
 		 * Prepare attributes
 		 */
 		int currentPage = 1;
-
 		if (request.getParameter(PARAM_CURRENTPAGE) != null) {
 			currentPage = Integer.parseInt(request
 					.getParameter(PARAM_CURRENTPAGE));

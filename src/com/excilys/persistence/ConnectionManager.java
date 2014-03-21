@@ -6,7 +6,16 @@ import java.sql.SQLException;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 
-public class ConnectionManager {
+/* Singleton : enum will ensure that we really have a singleton (otherwise, a exploit can be done with the JVM to duplicate objects */
+public enum ConnectionManager {
+	INSTANCE;
+
+	private ConnectionManager() {
+	}
+
+	public static ConnectionManager getInstance() {
+		return INSTANCE;
+	}
 
 	public final static String URL = "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull";
 	public final static String USER = "jee-cdb";
@@ -16,7 +25,7 @@ public class ConnectionManager {
 	private static BoneCP connectionPool;
 
 	/*
-	 * Connection Pool Manager
+	 * Initializing Connection Pool Manager
 	 */
 	public static void initialize() {
 		try {
@@ -36,6 +45,9 @@ public class ConnectionManager {
 		}
 	}
 
+	/*
+	 * Get connection
+	 */
 	public static Connection getConnection() {
 		Connection connection = null;
 		if (connectionPool == null) {

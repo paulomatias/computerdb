@@ -1,9 +1,6 @@
 package com.excilys.controller;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -17,6 +14,7 @@ import com.excilys.domain.Wrapper;
 import com.excilys.service.CompanyService;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
+import com.excilys.transfert.ComputerDTO;
 
 @SuppressWarnings("serial")
 public class AddComputerServlet extends HttpServlet {
@@ -25,26 +23,28 @@ public class AddComputerServlet extends HttpServlet {
 	public static final String PARAM_INTRODUCED = "introduced";
 	public static final String PARAM_DISCONTINUED = "discontinued";
 	public static final String PARAM_COMPANY = "company";
-	public static final String PARAM_currentPage = "currentPage";
+	public static final String PARAM_CURRENT_PAGE = "currentPage";
 	public static final String ATT_WRAPPER = "wrapper";
 	public static final String VIEW_POST = "/WEB-INF/dashboard.jsp";
 	public static final String VIEW_GET = "/WEB-INF/addComputer.jsp";
 	public static final ServiceManager serviceManager = ServiceManager
 			.getInstance();
-	public static final SimpleDateFormat FORMAT = new SimpleDateFormat(
-			"yyyy-MM-dd");
+
 	public static final int recordsPercurrentPage = Wrapper.RECORDS_PER_PAGE;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 		/*
 		 * Get instance of services by serviceManager
 		 */
 		CompanyService companyService = serviceManager.getCompanyService();
+
 		/*
 		 * Prepare attributes
 		 */
 		List<Company> listCompanies = companyService.getList();
+
 		/*
 		 * Set attributes and VIEW
 		 */
@@ -56,6 +56,7 @@ public class AddComputerServlet extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 		/*
 		 * Get instance of services by serviceManager
 		 */
@@ -71,41 +72,20 @@ public class AddComputerServlet extends HttpServlet {
 		String companyId = request.getParameter(PARAM_COMPANY);
 
 		/*
-		 * Test to parse dates
+		 * Setting computerDTO and add to db
 		 */
-		Date introducedDate = null;
-		Date discontinuedDate = null;
-		if (!introduced.equals("")) {
-			try {
-				introducedDate = FORMAT.parse(introduced);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
-		if (!discontinued.equals("")) {
-			try {
-				discontinuedDate = FORMAT.parse(discontinued);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
-		/*
-		 * Setting computer and add to db
-		 */
-		Company company = Company.builder().id(new Long(companyId))
-				.name(companyService.getName(new Long(companyId))).build();
-		Computer computer = Computer.builder().name(name)
-				.introduced(introducedDate).discontinued(discontinuedDate)
-				.company(company).build();
-		computerService.add(computer);
+		ComputerDTO computerDTO = ComputerDTO.builder().name(name)
+				.introduced(introduced).discontinued(discontinued)
+				.company(new Long(companyId)).build();
+		computerService.add(computerDTO);
 
 		/*
 		 * Prepare attributes
 		 */
 		int currentPage = 1;
-		if (request.getParameter(PARAM_currentPage) != null) {
+		if (request.getParameter(PARAM_CURRENT_PAGE) != null) {
 			currentPage = Integer.parseInt(request
-					.getParameter(PARAM_currentPage));
+					.getParameter(PARAM_CURRENT_PAGE));
 		}
 		Long nbrComputers = computerService.count();
 		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0

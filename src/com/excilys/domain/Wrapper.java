@@ -17,7 +17,6 @@ public class Wrapper {
 	private List<Computer> listComputers;
 
 	public static class Builder {
-
 		Wrapper computerWrapper;
 
 		private Builder() {
