@@ -1,5 +1,5 @@
-<%@ page pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ attribute name ="wrapper" required="true" type="com.excilys.domain.Wrapper" %>
 	<c:if test="${wrapper.currentPage != 1}">
 		<c:if
 			test="${wrapper.message=='Welcome to your computer database !' or wrapper.message=='Computer deleted successfully !' or wrapper.message=='Computer edited successfully !' or wrapper.message=='Computer added successfully !'}">

@@ -88,7 +88,7 @@ public class ComputerService {
 		Connection connection = ConnectionManager.getConnection();
 		try {
 			connection.setAutoCommit(false);
-			log.info("Add computer");
+			log.info("Adding computer...");
 			MapperDTO mapper = new MapperDTO();
 			Computer computer = null;
 			try {
@@ -98,6 +98,7 @@ public class ComputerService {
 			}
 			computerDAO.add(connection, computer);
 			connection.commit();
+			log.info("Computer added : " + computer);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -150,9 +151,11 @@ public class ComputerService {
 		Connection connection = ConnectionManager.getConnection();
 		try {
 			connection.setAutoCommit(false);
-			log.info("Delete computer");
+			log.info("Deleting computer...");
 			computerDAO.delete(connection, computer);
 			connection.commit();
+			log.info("computer with id n°" + computer.getId() + " deleted : "
+					+ computer);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -175,7 +178,7 @@ public class ComputerService {
 		Connection connection = ConnectionManager.getConnection();
 		try {
 			connection.setAutoCommit(false);
-			log.info("Edit list of computers");
+			log.info("Editing computer...");
 			MapperDTO mapper = new MapperDTO();
 			Computer computer = null;
 			try {
@@ -185,6 +188,8 @@ public class ComputerService {
 			}
 			computerDAO.edit(connection, computer);
 			connection.commit();
+			log.info("Computer with id n°" + computer.getId() + " edited : "
+					+ computer);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -209,9 +214,10 @@ public class ComputerService {
 		Long count = null;
 		try {
 			connection.setAutoCommit(false);
-			log.info("Count all");
+			log.info("Counting all computers...");
 			count = computerDAO.count(connection);
 			connection.commit();
+			log.info(count + " computer(s) found");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -327,12 +333,13 @@ public class ComputerService {
 	public Long countByName(String name) {
 
 		Connection connection = ConnectionManager.getConnection();
-		Long l = null;
+		Long count = null;
 		try {
 			connection.setAutoCommit(false);
-			log.info("Count by name");
-			l = computerDAO.countByName(connection, name);
+			log.info("Counting computers by name...");
+			count = computerDAO.countByName(connection, name);
 			connection.commit();
+			log.info(count + " computer(s) found");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -349,19 +356,20 @@ public class ComputerService {
 				e.printStackTrace();
 			}
 		}
-		return l;
+		return count;
 	}
 
 	public Long countByNameAndCompanyName(String name, String companyName) {
 
 		Connection connection = ConnectionManager.getConnection();
-		Long l = null;
+		Long count = null;
 		try {
 			connection.setAutoCommit(false);
-			log.info("count by name and company name");
-			l = computerDAO.countByNameAndCompanyName(connection, name,
+			log.info("Counting computers by name and company name...");
+			count = computerDAO.countByNameAndCompanyName(connection, name,
 					companyName);
 			connection.commit();
+			log.info(count + " computer(s) found");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -378,18 +386,19 @@ public class ComputerService {
 				e.printStackTrace();
 			}
 		}
-		return l;
+		return count;
 	}
 
 	public Long countByCompanyName(String companyName) {
 
 		Connection connection = ConnectionManager.getConnection();
-		Long l = null;
+		Long count = null;
 		try {
 			connection.setAutoCommit(false);
-			log.info("count by company  name");
-			l = computerDAO.countByCompanyName(connection, companyName);
+			log.info("Counting by company  name...");
+			count = computerDAO.countByCompanyName(connection, companyName);
 			connection.commit();
+			log.info(count + " computer(s) found");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -406,6 +415,6 @@ public class ComputerService {
 				e.printStackTrace();
 			}
 		}
-		return l;
+		return count;
 	}
 }

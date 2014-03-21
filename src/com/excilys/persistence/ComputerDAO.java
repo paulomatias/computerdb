@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -252,12 +251,20 @@ public enum ComputerDAO {
 		String query = "UPDATE computer SET name =?,introduced=?,discontinued=?,company_id=?  WHERE id=?;";
 		PreparedStatement statement = connection.prepareStatement(query);
 		statement.setString(1, computer.getName());
-		statement.setDate(2, (java.sql.Date) (computer.getIntroduced()));
-		statement.setDate(3, (java.sql.Date) (computer.getDiscontinued()));
-		if (computer.getCompany().getId().equals(null)) {
-			statement.setLong(4, computer.getCompany().getId());
+		if (computer.getIntroduced() == null) {
+			statement.setDate(2, null);
 		} else
+			statement.setDate(2, new java.sql.Date(computer.getIntroduced()
+					.getTime()));
+		if (computer.getDiscontinued() == (null)) {
+			statement.setDate(3, null);
+		} else
+			statement.setDate(3, new java.sql.Date(computer.getDiscontinued()
+					.getTime()));
+		if (computer.getCompany().getId().equals((0L))) {
 			statement.setString(4, null);
+		} else
+			statement.setLong(4, computer.getCompany().getId());
 		statement.setLong(5, computer.getId());
 		statement.executeUpdate();
 		if (statement != null)
@@ -289,22 +296,14 @@ public enum ComputerDAO {
 		ResultSet resultSet = statement.executeQuery();
 		Computer computer = null;
 		while (resultSet.next()) {
-			Date introduced = null;
-			Date discontinued = null;
-			if (resultSet.getString(3) != null) {
-				introduced = (FORMAT.parse(resultSet.getString(3)));
-			} else
-				introduced = null;
-			if (resultSet.getString(4) != null) {
-				discontinued = FORMAT.parse(resultSet.getString(4));
-			} else
-				discontinued = null;
 
 			Company company = Company.builder().id(resultSet.getLong(5))
 					.name(resultSet.getString(7)).build();
 			computer = Computer.builder().id(resultSet.getLong(1))
-					.name(resultSet.getString(2)).introduced(introduced)
-					.discontinued(discontinued).company(company).build();
+					.name(resultSet.getString(2))
+					.introduced(resultSet.getDate(3))
+					.discontinued(resultSet.getDate(4)).company(company)
+					.build();
 		}
 		if (resultSet != null)
 			resultSet.close();

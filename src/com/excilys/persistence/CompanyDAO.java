@@ -35,7 +35,6 @@ public enum CompanyDAO {
 
 		String GET_ALL = "SELECT id, name FROM `computer-database-db`.`company`;";
 		List<Company> listCompanies = new ArrayList<Company>();
-
 		PreparedStatement statement = connection.prepareStatement(GET_ALL);
 		ResultSet resultSet = statement.executeQuery();
 		while (resultSet.next()) {

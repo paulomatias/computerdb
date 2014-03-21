@@ -1,48 +1,56 @@
 <jsp:include page="include/header.jsp" />
-<%@ page pageEncoding="UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <section id="main">
 	<h1 id="homeTitle">Edit the following computer !</h1>
-		<table>
-			<thead>
-				<tr>
-					<th>Computer Name</th>
-					<th>Introduced Date</th>
-					<th>Discontinued Date</th>
-					<th>Company</th>
-				</tr>
-			</thead>
-			<tbody>
-					<tr>
-						<td><c:out value="${wrapper.computer.name}"/></td>
-						<td><c:out value="${wrapper.computer.introduced}"/></td>
-						<td><c:out value="${wrapper.computer.discontinued}"/></td>
-						<td><c:out value="${wrapper.computer.company.name} "/></td>
-					</tr>
-			</tbody>
-		</table>
-	<form action="/ProjetWebExcilys/EditComputerServlet?id=${wrapper.computer.id}" method="POST">
+	<table>
+		<thead>
+			<tr>
+				<th>Computer Name</th>
+				<th>Introduced Date</th>
+				<th>Discontinued Date</th>
+				<th>Company</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><c:out value="${wrapper.computer.name}" /></td>
+				<td><c:out value="${wrapper.computer.introduced}" /></td>
+				<td><c:out value="${wrapper.computer.discontinued}" /></td>
+				<td><c:out value="${wrapper.computer.company.name}" /></td>
+			</tr>
+		</tbody>
+	</table>
+	<form
+		action="/ProjetWebExcilys/EditComputerServlet?id=${wrapper.computer.id}"
+		method="POST">
 		<fieldset>
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
 				<div class="input">
-					<input type="text" name="name" />
+					<input type="text" name="name" value="${wrapper.computer.name}" data-validation="required"  />
 					<span class="help-inline">Required</span>
 				</div>
-			</div>	
+			</div>
 			<div class="clearfix">
 				<label for="introduced">Introduced date:</label>
 				<div class="input">
-					<input type="date" name="introduced" pattern="YY-dd-MM"/>
-					<span class="help-inline">YYYY-dd-MM</span>
+					<input type="date" name="introduced" data-validation="date"
+						data-validation-optional="true"
+						data-validation-format="yyyy-mm-dd"
+						value="${wrapper.computer.introduced}" /> <span
+						class="help-inline">YYYY-MM-dd</span>
 				</div>
 			</div>
 			<div class="clearfix">
 				<label for="discontinued">Discontinued date:</label>
 				<div class="input">
-					<input type="date" name="discontinued" pattern="YY-dd-MM"/>
-					<span class="help-inline">YYYY-dd-MM</span>
+					<input type="date" name="discontinued" data-validation="date"
+						data-validation-optional="true"
+						data-validation-format="yyyy-mm-dd"
+						value="${wrapper.computer.discontinued}" /> <span
+						class="help-inline">YYYY-MM-dd</span>
 				</div>
 			</div>
 			<div class="clearfix">
@@ -58,10 +66,17 @@
 			</div>
 		</fieldset>
 		<div class="actions">
-			<input type="submit" value="Edit" class="btn primary">
-			or <a href="index.jsp" class="btn">Cancel</a>
+			<input type="submit" value="Edit" class="btn primary"> or <a
+				href="index.jsp" class="btn">Cancel</a>
 		</div>
 	</form>
+		<script
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script
+		src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.1.47/jquery.form-validator.min.js"></script>
+	<script>
+		$.validate();
+	</script>
 </section>
 
 <jsp:include page="include/footer.jsp" />

@@ -49,16 +49,15 @@ public enum ConnectionManager {
 	 * Get connection
 	 */
 	public static Connection getConnection() {
-		Connection connection = null;
 		if (connectionPool == null) {
 			initialize();
 		}
 		try {
 			connectionThread.set(connectionPool.getConnection());
-			connection = connectionPool.getConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return connection;
+		return connectionThread.get();
+
 	}
 }
