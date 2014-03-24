@@ -11,6 +11,9 @@ public class MapperDTO {
 	public static final SimpleDateFormat FORMAT = new SimpleDateFormat(
 			"yyyy-MM-dd");
 
+	/*
+	 * transform a computer dto object to a computer
+	 */
 	public Computer toComputer(ComputerDTO computerDTO) throws ParseException {
 		Long id = computerDTO.getId();
 		String name = computerDTO.getName();
@@ -31,6 +34,18 @@ public class MapperDTO {
 				.introduced(introducedDate).discontinued(discontinuedDate)
 				.company(company).build();
 		return computer;
+	}
+
+	/*
+	 * transform a computer to a computer dto object
+	 */
+	public ComputerDTO toDTO(Computer computer) {
+		ComputerDTO computerDTO = ComputerDTO.builder().id(computer.getId())
+				.name(computer.getName())
+				.introduced(computer.getIntroduced().toString())
+				.discontinued(computer.getDiscontinued().toString())
+				.company(computer.getCompany().getId()).build();
+		return computerDTO;
 	}
 
 }

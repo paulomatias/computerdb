@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.excilys.domain.Company;
 import com.excilys.domain.Computer;
+import com.excilys.transfert.ComputerDTO;
 
 public class Wrapper {
 	public static final Integer RECORDS_PER_PAGE = 25;
@@ -16,6 +17,7 @@ public class Wrapper {
 	private String orderBy;
 	private Long nbrComputers;
 	private Computer computer;
+	private ComputerDTO computerDTO;
 	private List<Company> listCompanies;
 	private List<Computer> listComputers;
 
@@ -68,6 +70,11 @@ public class Wrapper {
 
 		public Builder computer(Computer computer) {
 			this.computerWrapper.computer = computer;
+			return this;
+		}
+
+		public Builder computerDTO(ComputerDTO computerDTO) {
+			this.computerWrapper.computerDTO = computerDTO;
 			return this;
 		}
 
@@ -162,6 +169,14 @@ public class Wrapper {
 		this.computer = computer;
 	}
 
+	public ComputerDTO getComputerDTO() {
+		return computerDTO;
+	}
+
+	public void setComputerDTO(ComputerDTO computerDTO) {
+		this.computerDTO = computerDTO;
+	}
+
 	public List<Company> getListCompanies() {
 		return listCompanies;
 	}
@@ -180,10 +195,12 @@ public class Wrapper {
 
 	@Override
 	public String toString() {
-		return "ComputerWrapper [nbrOfPages=" + nbrOfPages + ", currentPage="
-				+ currentPage + ", message=" + message + ", searchCompany="
-				+ searchCompany + ", searchComputer=" + searchComputer
-				+ ", nbrComputers=" + nbrComputers + ", listCompanies="
+		return "Wrapper [recordsPerPage=" + recordsPerPage + ", nbrOfPages="
+				+ nbrOfPages + ", currentPage=" + currentPage + ", message="
+				+ message + ", searchCompany=" + searchCompany
+				+ ", searchComputer=" + searchComputer + ", orderBy=" + orderBy
+				+ ", nbrComputers=" + nbrComputers + ", computer=" + computer
+				+ ", computerDTO=" + computerDTO + ", listCompanies="
 				+ listCompanies + ", listComputers=" + listComputers + "]";
 	}
 
@@ -191,6 +208,10 @@ public class Wrapper {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ ((computer == null) ? 0 : computer.hashCode());
+		result = prime * result
+				+ ((computerDTO == null) ? 0 : computerDTO.hashCode());
 		result = prime * result
 				+ ((currentPage == null) ? 0 : currentPage.hashCode());
 		result = prime * result
@@ -202,6 +223,9 @@ public class Wrapper {
 				+ ((nbrComputers == null) ? 0 : nbrComputers.hashCode());
 		result = prime * result
 				+ ((nbrOfPages == null) ? 0 : nbrOfPages.hashCode());
+		result = prime * result + ((orderBy == null) ? 0 : orderBy.hashCode());
+		result = prime * result
+				+ ((recordsPerPage == null) ? 0 : recordsPerPage.hashCode());
 		result = prime * result
 				+ ((searchCompany == null) ? 0 : searchCompany.hashCode());
 		result = prime * result
@@ -218,6 +242,16 @@ public class Wrapper {
 		if (getClass() != obj.getClass())
 			return false;
 		Wrapper other = (Wrapper) obj;
+		if (computer == null) {
+			if (other.computer != null)
+				return false;
+		} else if (!computer.equals(other.computer))
+			return false;
+		if (computerDTO == null) {
+			if (other.computerDTO != null)
+				return false;
+		} else if (!computerDTO.equals(other.computerDTO))
+			return false;
 		if (currentPage == null) {
 			if (other.currentPage != null)
 				return false;
@@ -247,6 +281,16 @@ public class Wrapper {
 			if (other.nbrOfPages != null)
 				return false;
 		} else if (!nbrOfPages.equals(other.nbrOfPages))
+			return false;
+		if (orderBy == null) {
+			if (other.orderBy != null)
+				return false;
+		} else if (!orderBy.equals(other.orderBy))
+			return false;
+		if (recordsPerPage == null) {
+			if (other.recordsPerPage != null)
+				return false;
+		} else if (!recordsPerPage.equals(other.recordsPerPage))
 			return false;
 		if (searchCompany == null) {
 			if (other.searchCompany != null)

@@ -56,7 +56,6 @@ public class AddComputerServlet extends HttpServlet {
 		/*
 		 * Get instance of services by serviceManager
 		 */
-		CompanyService companyService = serviceManager.getCompanyService();
 		ComputerService computerService = serviceManager.getComputerService();
 
 		/*
@@ -78,12 +77,16 @@ public class AddComputerServlet extends HttpServlet {
 		 * Get the wrapper to return to the JSP. All functions necessary are
 		 * done in the service package.
 		 */
-		int currentPage = 1;
+		Integer currentPage = 1;
 		if (request.getParameter(PARAM_CURRENT_PAGE) != null) {
 			currentPage = Integer.parseInt(request
 					.getParameter(PARAM_CURRENT_PAGE));
 		}
 
+		/*
+		 * Get the wrapper to return to the JSP. All functions necessary are
+		 * done in the service package.
+		 */
 		Wrapper wrapper = computerService.getAddComputerWrapper(currentPage,
 				computerDTO);
 

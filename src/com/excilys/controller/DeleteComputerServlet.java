@@ -28,26 +28,27 @@ public class DeleteComputerServlet extends HttpServlet {
 		 * Get instance of services by serviceManager
 		 */
 		ComputerService computerService = serviceManager.getComputerService();
+
 		/*
 		 * GetParameters
 		 */
 		String computerId = request.getParameter(PARAM_COMPUTER_ID);
-		int currentPage = 1;
+		Integer currentPage = 1;
 		if (request.getParameter(PARAM_CURRENT_PAGE) != null) {
 			currentPage = Integer.parseInt(request
 					.getParameter(PARAM_CURRENT_PAGE));
 		}
 
 		/*
-		 * 
+		 * Get the wrapper to return to the JSP. All functions necessary are
+		 * done in the service package.
 		 */
 		Wrapper wrapper = computerService.getDeleteComputerWrapper(currentPage,
 				computerId);
 
 		/*
-		 * 
+		 * Set attributes and VIEW
 		 */
-
 		request.setAttribute(ATT_WRAPPER, wrapper);
 		request.getRequestDispatcher(VIEW).forward(request, response);
 

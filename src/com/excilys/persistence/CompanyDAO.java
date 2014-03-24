@@ -7,9 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.excilys.domain.Company;
 
 /* Singleton : enum will ensure that we really have a singleton (otherwise, a exploit can be done with the JVM to duplicate objects */
@@ -24,12 +21,11 @@ public enum CompanyDAO {
 	}
 
 	/*
-	 * Logger
+	 * Functions
 	 */
-	static Logger log = LoggerFactory.getLogger(CompanyDAO.class.getName());
 
 	/*
-	 * Functions
+	 * Return the company list
 	 */
 	public List<Company> getList(Connection connection) throws SQLException {
 
@@ -49,6 +45,9 @@ public enum CompanyDAO {
 		return listCompanies;
 	}
 
+	/*
+	 * Return the name of a company using its id
+	 */
 	public String getName(Connection connection, Long companyId)
 			throws SQLException {
 

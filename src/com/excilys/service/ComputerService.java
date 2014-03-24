@@ -14,34 +14,43 @@ import com.excilys.persistence.CompanyDAO;
 import com.excilys.persistence.ComputerDAO;
 import com.excilys.persistence.ConnectionManager;
 import com.excilys.persistence.DAOFactory;
+import com.excilys.persistence.LogDAO;
 import com.excilys.transfert.ComputerDTO;
 import com.excilys.transfert.MapperDTO;
 import com.excilys.wrapper.Wrapper;
 
-public class ComputerService {
-	public static final Integer recordsPerPage = Wrapper.RECORDS_PER_PAGE;
-	private final static ComputerService instance = new ComputerService();
-	private static DAOFactory daoFactory = DAOFactory.getInstance();
-	private static ComputerDAO computerDAO = daoFactory.getComputerDAO();
-	private static CompanyDAO companyDAO = daoFactory.getCompanyDAO();
-	static Logger log = LoggerFactory.getLogger(ComputerService.class);
+/* Singleton : enum will ensure that we really have a singleton (otherwise, a exploit can be done with the JVM to duplicate objects */
+public enum ComputerService {
+	INSTANCE;
 
 	private ComputerService() {
 	}
 
 	public static ComputerService getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
-	public Wrapper getDashboardWrapper(int currentPage, String orderBy) {
+	public static final Integer recordsPerPage = Wrapper.RECORDS_PER_PAGE;
+	private static DAOFactory daoFactory = DAOFactory.getInstance();
+	private static LogDAO logDAO = daoFactory.getLogDAO();
+	private static ComputerDAO computerDAO = daoFactory.getComputerDAO();
+	private static CompanyDAO companyDAO = daoFactory.getCompanyDAO();
+	static Logger log = LoggerFactory.getLogger(ComputerService.class);
+
+	/*
+	 * Return the wrapper to the dahboardServlet, using transactions
+	 */
+	public Wrapper getDashboardWrapper(Integer currentPage, String orderBy) {
 
 		Connection connection = ConnectionManager.getConnection();
 		Wrapper wrapper = null;
 		try {
 			connection.setAutoCommit(false);
+			log.info("Counting number of computers...");
 			Long nbrComputers = computerDAO.count(connection);
-			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+			Integer nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
 					/ recordsPerPage);
+			log.info("Getting list of computers...");
 			List<Computer> listComputers = computerDAO.getList(connection,
 					orderBy, currentPage, recordsPerPage);
 			String message = "Welcome to your computer database !";
@@ -50,6 +59,7 @@ public class ComputerService {
 					.listComputers(listComputers).message(message)
 					.orderBy(orderBy).build();
 			connection.commit();
+			log.info("Transactions successful");
 		} catch (SQLException e) {
 			try {
 				connection.rollback();
@@ -67,20 +77,27 @@ public class ComputerService {
 		return wrapper;
 	}
 
-	public Wrapper getAddComputerWrapper(int currentPage,
+	/*
+	 * Return the wrapper to the addServlet, using transactions
+	 */
+	public Wrapper getAddComputerWrapper(Integer currentPage,
 			ComputerDTO computerDTO) {
 		Connection connection = ConnectionManager.getConnection();
 		MapperDTO mapper = new MapperDTO();
 		Wrapper wrapper = null;
-
+		System.out.println("1" + computerDTO);
 		try {
 			connection.setAutoCommit(false);
+			log.info("Adding computer...");
 			Computer computer = mapper.toComputer(computerDTO);
-			computerDAO.add(connection, computer);
+			computer.setId(computerDAO.add(connection, computer));
+			log.info("Counting number of computers...");
 			Long nbrComputers = computerDAO.count(connection);
-			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+			Integer nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
 					/ recordsPerPage);
+			log.info("Getting list of companies...");
 			List<Company> listCompanies = companyDAO.getList(connection);
+			log.info("Getting list of computers...");
 			List<Computer> listComputers = computerDAO.getList(connection,
 					null, currentPage, recordsPerPage);
 			String message = "Computer added successfully !";
@@ -88,7 +105,9 @@ public class ComputerService {
 					.nbrOfPages(nbrOfPages).nbrComputers(nbrComputers)
 					.listCompanies(listCompanies).listComputers(listComputers)
 					.message(message).build();
+			logDAO.setLog(connection, computer, "insert");
 			connection.commit();
+			log.info("Transaction successful");
 		} catch (SQLException e) {
 			try {
 				connection.rollback();
@@ -108,14 +127,18 @@ public class ComputerService {
 		return wrapper;
 	}
 
-	public Wrapper getDeleteComputerWrapper(int currentPage, String computerId) {
+	/*
+	 * Return the wrapper to the deleteServlet, using transactions
+	 */
+	public Wrapper getDeleteComputerWrapper(Integer currentPage,
+			String computerId) {
 		Connection connection = ConnectionManager.getConnection();
 		Wrapper wrapper = null;
 		try {
 			connection.setAutoCommit(false);
 			Long nbrComputers;
 			nbrComputers = computerDAO.count(connection);
-			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+			Integer nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
 					/ recordsPerPage);
 			List<Computer> listComputers = computerDAO
 					.getList(connection, null);
@@ -128,6 +151,7 @@ public class ComputerService {
 			wrapper = Wrapper.builder().currentPage(currentPage)
 					.nbrComputers(nbrComputers).nbrOfPages(nbrOfPages)
 					.listComputers(listComputers).message(message).build();
+			logDAO.setLog(connection, computer, "delete");
 			connection.commit();
 		} catch (SQLException e) {
 			try {
@@ -146,6 +170,10 @@ public class ComputerService {
 		return wrapper;
 	}
 
+	/*
+	 * Return the wrapper to the editServlet for the get method, using
+	 * transactions
+	 */
 	public Wrapper getEditComputerWrapper(String computerId) {
 
 		Connection connection = ConnectionManager.getConnection();
@@ -158,6 +186,7 @@ public class ComputerService {
 					Long.valueOf(computerId));
 			wrapper = Wrapper.builder().computer(computer)
 					.listCompanies(listCompanies).build();
+			logDAO.setLog(connection, computer, "update");
 			connection.commit();
 		} catch (SQLException e) {
 			try {
@@ -180,7 +209,11 @@ public class ComputerService {
 		return wrapper;
 	}
 
-	public Wrapper getEditComputerWrapperPost(int currentPage,
+	/*
+	 * Return the wrapper to the editServlet for the post method, using
+	 * transactions
+	 */
+	public Wrapper getEditComputerWrapperPost(Integer currentPage,
 			ComputerDTO computerDTO) {
 
 		Connection connection = ConnectionManager.getConnection();
@@ -193,7 +226,7 @@ public class ComputerService {
 			computer = mapper.toComputer(computerDTO);
 			computerDAO.edit(connection, computer);
 			Long nbrComputers = computerDAO.count(connection);
-			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+			Integer nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
 					/ recordsPerPage);
 			List<Computer> listComputers = computerDAO.getList(connection,
 					null, currentPage, recordsPerPage);
@@ -222,43 +255,8 @@ public class ComputerService {
 		return wrapper;
 	}
 
-	public Wrapper getSelectComputerWrapperNoSearch(String orderBy,
-			int currentPage, Integer recordsperpage2) {
-
-		Connection connection = ConnectionManager.getConnection();
-		Wrapper wrapper = null;
-		try {
-			connection.setAutoCommit(false);
-			List<Computer> listComputers = computerDAO.getList(connection,
-					orderBy, currentPage, recordsPerPage);
-			Long nbrComputers = computerDAO.count(connection);
-			String message = "Welcome to your computer database !";
-			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
-					/ recordsPerPage);
-			wrapper = Wrapper.builder().currentPage(currentPage)
-					.nbrOfPages(nbrOfPages).listComputers(listComputers)
-					.nbrComputers(nbrComputers).orderBy(orderBy)
-					.message(message).build();
-			connection.commit();
-		} catch (SQLException e) {
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
-		} finally {
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return wrapper;
-	}
-
 	public Wrapper getSelectComputerWrapperSearchComputer(String orderBy,
-			Integer currentPage, Integer recordsperpage, String searchComputer) {
+			Integer currentPage, String searchComputer) {
 		Connection connection = ConnectionManager.getConnection();
 		Wrapper wrapper = null;
 		try {
@@ -294,8 +292,8 @@ public class ComputerService {
 	}
 
 	public Wrapper getSelectComputerWrapperSearchCompanySearchComputer(
-			String orderBy, Integer currentPage, Integer recordsperpage,
-			String searchCompany, String searchComputer) {
+			String orderBy, Integer currentPage, String searchCompany,
+			String searchComputer) {
 
 		Connection connection = ConnectionManager.getConnection();
 		Wrapper wrapper = null;
@@ -334,7 +332,7 @@ public class ComputerService {
 	}
 
 	public Wrapper getSelectComputerWrapperSearchCompany(String orderBy,
-			Integer currentPage, Integer recordsperpage, String searchCompany) {
+			Integer currentPage, String searchCompany) {
 
 		Connection connection = ConnectionManager.getConnection();
 		Wrapper wrapper = null;
@@ -346,7 +344,7 @@ public class ComputerService {
 			Long nbrComputers = computerDAO.countByCompanyName(connection,
 					searchCompany);
 			String message = "Computer(s) selected successfully !";
-			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+			Integer nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
 					/ recordsPerPage);
 			wrapper = Wrapper.builder().currentPage(currentPage)
 					.nbrOfPages(nbrOfPages).listComputers(listComputers)

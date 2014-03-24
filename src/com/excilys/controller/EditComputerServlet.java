@@ -32,16 +32,26 @@ public class EditComputerServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 		/*
 		 * GetParameters
 		 */
 		String computerId = request.getParameter(PARAM_COMPUTER_ID);
+
 		/*
 		 * Get instance of services by serviceManager
 		 */
-
 		ComputerService computerService = serviceManager.getComputerService();
+
+		/*
+		 * Get the wrapper to return to the JSP. All functions necessary are
+		 * done in the service package.
+		 */
 		Wrapper wrapper = computerService.getEditComputerWrapper(computerId);
+
+		/*
+		 * Set attributes and VIEW
+		 */
 		request.setAttribute(ATT_WRAPPER, wrapper);
 		request.getRequestDispatcher(VIEW_GET).forward(request, response);
 	}
@@ -56,7 +66,7 @@ public class EditComputerServlet extends HttpServlet {
 		String introduced = request.getParameter(PARAM_INTRODUCED);
 		String discontinued = request.getParameter(PARAM_DISCONTINUED);
 		String companyId = request.getParameter(PARAM_COMPANY);
-		int currentPage = 1;
+		Integer currentPage = 1;
 		if (request.getParameter(PARAM_CURRENT_PAGE) != null) {
 			currentPage = Integer.parseInt(request
 					.getParameter(PARAM_CURRENT_PAGE));
@@ -68,7 +78,7 @@ public class EditComputerServlet extends HttpServlet {
 		ComputerService computerService = ComputerService.getInstance();
 
 		/*
-		 * Setting computer and edit the db
+		 * Setting computerDTO
 		 */
 		ComputerDTO computerDTO = ComputerDTO.builder()
 				.id(Long.valueOf(computerId)).name(name).introduced(introduced)
@@ -76,15 +86,15 @@ public class EditComputerServlet extends HttpServlet {
 				.build();
 
 		/*
-		 * Prepare attributes
+		 * Get the wrapper to return to the JSP. All functions necessary are
+		 * done in the service package.
 		 */
-
 		Wrapper wrapper = computerService.getEditComputerWrapperPost(
 				currentPage, computerDTO);
+
 		/*
 		 * Set attributes and VIEW
 		 */
-
 		request.setAttribute(ATT_WRAPPER, wrapper);
 		request.getRequestDispatcher(VIEW_POST).forward(request, response);
 

@@ -14,6 +14,8 @@ import com.excilys.wrapper.Wrapper;
 @SuppressWarnings("serial")
 public class DashboardServlet extends HttpServlet {
 	/* JSP Parameters, request attributes, views */
+	public static final String PARAM_SEARCH_COMPUTER = "searchComputer";
+	public static final String PARAM_SEARCH_COMANY = "searchCompany";
 	public static final String PARAM_CURRENTPAGE = "currentPage";
 	public static final String PARAM_ORDER_BY = "orderBy";
 	public static final String ATT_WRAPPER = "wrapper";
@@ -30,9 +32,11 @@ public class DashboardServlet extends HttpServlet {
 		ComputerService computerService = serviceManager.getComputerService();
 
 		/*
-		 * Prepare attributes
+		 * Get parameters
 		 */
-		int currentPage = 1;
+		String searchComputer = request.getParameter(PARAM_SEARCH_COMPUTER);
+		String searchCompany = request.getParameter(PARAM_SEARCH_COMANY);
+		Integer currentPage = 1;
 		if (request.getParameter(PARAM_CURRENTPAGE) != null) {
 			currentPage = Integer.parseInt(request
 					.getParameter(PARAM_CURRENTPAGE));
@@ -42,12 +46,31 @@ public class DashboardServlet extends HttpServlet {
 			orderBy = request.getParameter(PARAM_ORDER_BY);
 		}
 
-		Wrapper wrapper = computerService.getDashboardWrapper(currentPage,
-				orderBy);
-
 		/*
-		 * Set attributes and VIEW
+		 * Get the wrapper to return to the JSP. All functions necessary are
+		 * done in the service package.
 		 */
+		Wrapper wrapper = null;
+		if (searchComputer == null) {
+			searchComputer = "";
+		}
+		if (searchCompany == null) {
+			searchCompany = "";
+		}
+		if (searchComputer.equals("") && searchCompany.equals("")) {
+			wrapper = computerService.getDashboardWrapper(currentPage, orderBy);
+		} else if (!searchComputer.equals("") && searchCompany.equals("")) {
+			wrapper = computerService.getSelectComputerWrapperSearchComputer(
+					orderBy, currentPage, searchComputer);
+		} else if ((!searchComputer.equals("") && !searchCompany.equals(""))) {
+			wrapper = computerService
+					.getSelectComputerWrapperSearchCompanySearchComputer(
+							orderBy, currentPage, searchCompany, searchComputer);
+		} else if (searchComputer.equals("") && !searchCompany.equals("")) {
+			wrapper = computerService.getSelectComputerWrapperSearchCompany(
+					orderBy, currentPage, searchCompany);
+		}
+
 		request.setAttribute(ATT_WRAPPER, wrapper);
 		request.getRequestDispatcher(VIEW).forward(request, response);
 

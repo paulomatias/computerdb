@@ -10,7 +10,7 @@
 		Computer(s) found
 	</h2>
 	<div id="actions">
-		<form action="/ProjetWebExcilys/SelectComputerServlet" method="GET">
+		<form action="/ProjetWebExcilys/DashboardServlet" method="GET">
 			<input type="search" id="searchbox" value="" name="searchComputer"
 				placeholder="Search computer name"> <input type="search"
 				id="searchbox" value="" name="searchCompany"
@@ -47,18 +47,18 @@
 				test="${wrapper.message=='Computer(s) selected successfully !'}">
 				<tr>
 					<th><a
-						href="/ProjetWebExcilys/SelectComputerServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='nameASC' ? 'nameDESC' : 'nameASC'}"
+						href="/ProjetWebExcilys/DashboardServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='nameASC' ? 'nameDESC' : 'nameASC'}"
 						title="order by name"><c:out value="Computer Name" /></a></th>
 					<th><a
-						href="/ProjetWebExcilys/SelectComputerServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='introducedASC' ? 'introducedDESC' : 'introducedASC'}"
+						href="/ProjetWebExcilys/DashboardServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='introducedASC' ? 'introducedDESC' : 'introducedASC'}"
 						title="order by introduced date"><c:out
 								value="Introduced Date" /></a></th>
 					<th><a
-						href="/ProjetWebExcilys/SelectComputerServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='discontinuedASC' ? 'discontinuedDESC' : 'discontinuedASC'}"
+						href="/ProjetWebExcilys/DashboardServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='discontinuedASC' ? 'discontinuedDESC' : 'discontinuedASC'}"
 						title="order by discontinued date"><c:out
 								value="Discontinued Date" /></a></th>
 					<th><a
-						href="/ProjetWebExcilys/SelectComputerServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='companyASC' ? 'companyDESC' : 'companyASC'}"
+						href="/ProjetWebExcilys/DashboardServlet?${!empty wrapper.currentPage ? 'currentPage='.concat(wrapper.currentPage) : ''}${!empty wrapper.searchComputer ? '&searchComputer='.concat(wrapper.searchComputer) : ''}${!empty wrapper.searchCompany ? '&searchCompany='.concat(wrapper.searchCompany) : ''}&orderBy=${ wrapper.orderBy =='companyASC' ? 'companyDESC' : 'companyASC'}"
 						title="order by company"><c:out value="Company" /></a></th>
 					<th></th>
 				</tr>

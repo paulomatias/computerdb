@@ -4,39 +4,29 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.excilys.domain.Company;
 import com.excilys.persistence.CompanyDAO;
 import com.excilys.persistence.ConnectionManager;
 import com.excilys.persistence.DAOFactory;
 import com.excilys.wrapper.Wrapper;
 
-public class CompanyService {
-	private final static CompanyService instance = new CompanyService();
-	private static DAOFactory daoFactory = DAOFactory.getInstance();
-	private static CompanyDAO companyDAO = daoFactory.getCompanyDAO();
+/* Singleton : enum will ensure that we really have a singleton (otherwise, a exploit can be done with the JVM to duplicate objects */
+public enum CompanyService {
+	INSTANCE;
 
-	/*
-	 * Logger
-	 */
-	static Logger log = LoggerFactory.getLogger(CompanyService.class.getName());
-
-	/*
-	 * Singleton
-	 */
 	private CompanyService() {
 	}
 
 	public static CompanyService getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
-	/*
-	 * Service
-	 */
+	private static DAOFactory daoFactory = DAOFactory.getInstance();
+	private static CompanyDAO companyDAO = daoFactory.getCompanyDAO();
 
+	/*
+	 * Return the wrapper to the addServlet, using transactions
+	 */
 	public Wrapper getAddComputerWrapper() {
 		Connection connection = ConnectionManager.getConnection();
 		List<Company> listCompanies = null;
