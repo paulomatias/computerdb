@@ -16,7 +16,6 @@ public class Wrapper {
 	private String searchComputer;
 	private String orderBy;
 	private Long nbrComputers;
-	private Computer computer;
 	private ComputerDTO computerDTO;
 	private List<Company> listCompanies;
 	private List<Computer> listComputers;
@@ -65,11 +64,6 @@ public class Wrapper {
 
 		public Builder nbrComputers(Long nbrComputers) {
 			this.computerWrapper.nbrComputers = nbrComputers;
-			return this;
-		}
-
-		public Builder computer(Computer computer) {
-			this.computerWrapper.computer = computer;
 			return this;
 		}
 
@@ -161,14 +155,6 @@ public class Wrapper {
 		this.nbrComputers = nbrComputers;
 	}
 
-	public Computer getComputer() {
-		return computer;
-	}
-
-	public void setComputer(Computer computer) {
-		this.computer = computer;
-	}
-
 	public ComputerDTO getComputerDTO() {
 		return computerDTO;
 	}
@@ -199,17 +185,16 @@ public class Wrapper {
 				+ nbrOfPages + ", currentPage=" + currentPage + ", message="
 				+ message + ", searchCompany=" + searchCompany
 				+ ", searchComputer=" + searchComputer + ", orderBy=" + orderBy
-				+ ", nbrComputers=" + nbrComputers + ", computer=" + computer
-				+ ", computerDTO=" + computerDTO + ", listCompanies="
-				+ listCompanies + ", listComputers=" + listComputers + "]";
+				+ ", nbrComputers=" + nbrComputers + ", computerDTO="
+				+ computerDTO + ", listCompanies=" + listCompanies
+				+ ", listComputers=" + listComputers + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((computer == null) ? 0 : computer.hashCode());
+
 		result = prime * result
 				+ ((computerDTO == null) ? 0 : computerDTO.hashCode());
 		result = prime * result
@@ -242,11 +227,6 @@ public class Wrapper {
 		if (getClass() != obj.getClass())
 			return false;
 		Wrapper other = (Wrapper) obj;
-		if (computer == null) {
-			if (other.computer != null)
-				return false;
-		} else if (!computer.equals(other.computer))
-			return false;
 		if (computerDTO == null) {
 			if (other.computerDTO != null)
 				return false;

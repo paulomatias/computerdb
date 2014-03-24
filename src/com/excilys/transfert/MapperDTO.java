@@ -40,10 +40,19 @@ public class MapperDTO {
 	 * transform a computer to a computer dto object
 	 */
 	public ComputerDTO toDTO(Computer computer) {
+		String introduced;
+		String discontinued;
+		if (computer.getIntroduced() != null) {
+			introduced = computer.getIntroduced().toString();
+		} else
+			introduced = null;
+		if (computer.getDiscontinued() != null) {
+			discontinued = computer.getDiscontinued().toString();
+		} else
+			discontinued = null;
 		ComputerDTO computerDTO = ComputerDTO.builder().id(computer.getId())
-				.name(computer.getName())
-				.introduced(computer.getIntroduced().toString())
-				.discontinued(computer.getDiscontinued().toString())
+				.name(computer.getName()).introduced(introduced)
+				.discontinued(discontinued)
 				.company(computer.getCompany().getId()).build();
 		return computerDTO;
 	}

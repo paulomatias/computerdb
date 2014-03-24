@@ -184,7 +184,9 @@ public enum ComputerService {
 			listCompanies = companyDAO.getList(connection);
 			Computer computer = computerDAO.get(connection,
 					Long.valueOf(computerId));
-			wrapper = Wrapper.builder().computer(computer)
+			MapperDTO mapper = new MapperDTO();
+			ComputerDTO computerDTO = mapper.toDTO(computer);
+			wrapper = Wrapper.builder().computerDTO(computerDTO)
 					.listCompanies(listCompanies).build();
 			logDAO.setLog(connection, computer, "update");
 			connection.commit();

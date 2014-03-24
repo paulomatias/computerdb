@@ -11,6 +11,7 @@ import com.excilys.service.CompanyService;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
 import com.excilys.transfert.ComputerDTO;
+import com.excilys.validator.Validator;
 import com.excilys.wrapper.Wrapper;
 
 @SuppressWarnings("serial")
@@ -83,17 +84,29 @@ public class AddComputerServlet extends HttpServlet {
 					.getParameter(PARAM_CURRENT_PAGE));
 		}
 
-		/*
-		 * Get the wrapper to return to the JSP. All functions necessary are
-		 * done in the service package.
-		 */
-		Wrapper wrapper = computerService.getAddComputerWrapper(currentPage,
-				computerDTO);
+		Validator validator = new Validator();
+		if (validator.getValidation(computerDTO).equals(0)) {
+			/*
+			 * Get the wrapper to return to the JSP. All functions necessary are
+			 * done in the service package.
+			 */
+			Wrapper wrapper = computerService.getAddComputerWrapper(
+					currentPage, computerDTO);
 
-		/*
-		 * Set attributes and VIEW
-		 */
-		request.setAttribute(ATT_WRAPPER, wrapper);
-		request.getRequestDispatcher(VIEW_POST).forward(request, response);
+			/*
+			 * Set attributes and VIEW
+			 */
+			request.setAttribute(ATT_WRAPPER, wrapper);
+			request.getRequestDispatcher(VIEW_POST).forward(request, response);
+		}
+		if (validator.getValidation(computerDTO).equals(1)) {
+
+		}
+		if (validator.getValidation(computerDTO).equals(2)) {
+
+		}
+		if (validator.getValidation(computerDTO).equals(3)) {
+
+		}
 	}
 }

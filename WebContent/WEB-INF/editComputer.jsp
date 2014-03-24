@@ -4,32 +4,14 @@
 
 <section id="main">
 	<h1 id="homeTitle">Edit the following computer !</h1>
-	<table>
-		<thead>
-			<tr>
-				<th>Computer Name</th>
-				<th>Introduced Date</th>
-				<th>Discontinued Date</th>
-				<th>Company</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td><c:out value="${wrapper.computer.name}" /></td>
-				<td><c:out value="${wrapper.computer.introduced}" /></td>
-				<td><c:out value="${wrapper.computer.discontinued}" /></td>
-				<td><c:out value="${wrapper.computer.company.name}" /></td>
-			</tr>
-		</tbody>
-	</table>
 	<form
-		action="/ProjetWebExcilys/EditComputerServlet?id=${wrapper.computer.id}"
+		action="/ProjetWebExcilys/EditComputerServlet?id=${wrapper.computerDTO.id}"
 		method="POST">
 		<fieldset>
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
 				<div class="input">
-					<input type="text" name="name" value="${wrapper.computer.name}" data-validation="required"  />
+					<input type="text" name="name" value="${wrapper.computerDTO.name}" data-validation="required"  />
 					<span class="help-inline">Required</span>
 				</div>
 			</div>
@@ -39,7 +21,7 @@
 					<input type="date" name="introduced" data-validation="date"
 						data-validation-optional="true"
 						data-validation-format="yyyy-mm-dd"
-						value="${wrapper.computer.introduced}" /> <span
+						value="${wrapper.computerDTO.introduced}" /> <span
 						class="help-inline">YYYY-MM-dd</span>
 				</div>
 			</div>
@@ -49,7 +31,7 @@
 					<input type="date" name="discontinued" data-validation="date"
 						data-validation-optional="true"
 						data-validation-format="yyyy-mm-dd"
-						value="${wrapper.computer.discontinued}" /> <span
+						value="${wrapper.computerDTO.discontinued}" /> <span
 						class="help-inline">YYYY-MM-dd</span>
 				</div>
 			</div>
