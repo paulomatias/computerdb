@@ -23,6 +23,9 @@ public class AddComputerServlet extends HttpServlet {
 	public static final String PARAM_COMPANY = "company";
 	public static final String PARAM_CURRENT_PAGE = "currentPage";
 	public static final String ATT_WRAPPER = "wrapper";
+	public static final String ATT_ERROR_NAME = "errorName";
+	public static final String ATT_ERROR_INTRODUCED = "errorIntroduced";
+	public static final String ATT_ERROR_DISCONTINUED = "errorDiscontinued";
 	public static final String VIEW_POST = "/WEB-INF/dashboard.jsp";
 	public static final String VIEW_GET = "/WEB-INF/addComputer.jsp";
 	public static final ServiceManager serviceManager = ServiceManager
@@ -100,13 +103,19 @@ public class AddComputerServlet extends HttpServlet {
 			request.getRequestDispatcher(VIEW_POST).forward(request, response);
 		}
 		if (validator.getValidation(computerDTO).equals(1)) {
-
+			request.setAttribute(ATT_ERROR_NAME,
+					"You have not answered all required fields");
+			request.getRequestDispatcher(VIEW_POST).forward(request, response);
 		}
 		if (validator.getValidation(computerDTO).equals(2)) {
-
+			request.setAttribute(ATT_ERROR_INTRODUCED,
+					"You have not given a correct date");
+			request.getRequestDispatcher(VIEW_POST).forward(request, response);
 		}
 		if (validator.getValidation(computerDTO).equals(3)) {
-
+			request.setAttribute(ATT_ERROR_DISCONTINUED,
+					"You have not given a correct date");
+			request.getRequestDispatcher(VIEW_POST).forward(request, response);
 		}
 	}
 }

@@ -24,6 +24,7 @@ public class DeleteComputerServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 		/*
 		 * Get instance of services by serviceManager
 		 */

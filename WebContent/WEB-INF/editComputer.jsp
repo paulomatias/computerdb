@@ -11,8 +11,8 @@
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
 				<div class="input">
-					<input type="text" name="name" value="${wrapper.computerDTO.name}" data-validation="required"  />
-					<span class="help-inline">Required</span>
+					<input type="text" name="name" value="${wrapper.computerDTO.name}"
+						data-validation="required" /> <span class="help-inline">Required</span>
 				</div>
 			</div>
 			<div class="clearfix">
@@ -41,7 +41,14 @@
 					<select name="company">
 						<option value="0">--</option>
 						<c:forEach items="${wrapper.listCompanies}" var="var">
-							<option value="${var.id}">${var.name}</option>
+							<c:choose>
+								<c:when test="${var.id==wrapper.computerDTO.company}">
+									<option value="${var.id}" selected="selected">${var.name}</option>
+								</c:when>
+								<c:otherwise>
+									<option value="${var.id}">${var.name}</option>
+								</c:otherwise>
+							</c:choose>
 						</c:forEach>
 					</select>
 				</div>
@@ -52,7 +59,7 @@
 				href="index.jsp" class="btn">Cancel</a>
 		</div>
 	</form>
-		<script
+	<script
 		src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script
 		src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.1.47/jquery.form-validator.min.js"></script>

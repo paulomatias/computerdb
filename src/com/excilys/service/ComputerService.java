@@ -233,9 +233,10 @@ public enum ComputerService {
 			List<Computer> listComputers = computerDAO.getList(connection,
 					null, currentPage, recordsPerPage);
 			String message = "Computer edited successfully !";
-			wrapper = Wrapper.builder().currentPage(currentPage)
-					.nbrOfPages(nbrOfPages).listComputers(listComputers)
-					.nbrComputers(nbrComputers).message(message).build();
+			wrapper = Wrapper.builder().computerDTO(computerDTO)
+					.currentPage(currentPage).nbrOfPages(nbrOfPages)
+					.listComputers(listComputers).nbrComputers(nbrComputers)
+					.message(message).build();
 			connection.commit();
 		} catch (ParseException e) {
 			e.printStackTrace();
