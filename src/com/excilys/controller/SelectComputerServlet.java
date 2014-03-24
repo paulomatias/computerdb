@@ -1,14 +1,12 @@
 package com.excilys.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.domain.Computer;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
 import com.excilys.wrapper.Wrapper;
@@ -35,9 +33,6 @@ public class SelectComputerServlet extends HttpServlet {
 		 */
 
 		ComputerService computerService = serviceManager.getComputerService();
-		List<Computer> listComputers = null;
-		String message = null;
-		Long nbrComputers = null;
 
 		/*
 		 * GetParameters
@@ -58,6 +53,7 @@ public class SelectComputerServlet extends HttpServlet {
 		 * Tests ans set attributes
 		 */
 
+		Wrapper wrapper = null;
 		if (searchComputer == null) {
 			searchComputer = "";
 		}
@@ -65,38 +61,28 @@ public class SelectComputerServlet extends HttpServlet {
 			searchCompany = "";
 		}
 		if (searchComputer.equals("") && searchCompany.equals("")) {
-			listComputers = computerService.getList(orderBy, currentPage,
-					recordsPerPage);
-			nbrComputers = computerService.count();
-			message = "Welcome to your computer database !";
+			wrapper = computerService.getSelectComputerWrapperNoSearch(orderBy,
+					currentPage, recordsPerPage);
+
 		} else if (!searchComputer.equals("") && searchCompany.equals("")) {
-			listComputers = computerService.getListByName(searchComputer,
-					orderBy, currentPage, recordsPerPage);
-			nbrComputers = computerService.countByName(searchComputer);
-			message = "Computer(s) selected successfully !";
+			wrapper = computerService.getSelectComputerWrapperSearchComputer(
+					orderBy, currentPage, recordsPerPage, searchComputer);
+
 		} else if ((!searchComputer.equals("") && !searchCompany.equals(""))) {
-			listComputers = computerService.getListByNameAndCompanyName(
-					searchComputer, searchCompany, orderBy, currentPage,
-					recordsPerPage);
-			nbrComputers = computerService.countByNameAndCompanyName(
-					searchComputer, searchCompany);
-			message = "Computer(s) selected successfully !";
+			wrapper = computerService
+					.getSelectComputerWrapperSearchCompanySearchComputer(
+							orderBy, currentPage, recordsPerPage,
+							searchCompany, searchComputer);
+
 		} else if (searchComputer.equals("") && !searchCompany.equals("")) {
-			listComputers = computerService.getListByCompanyName(searchCompany,
-					orderBy, currentPage, recordsPerPage);
-			nbrComputers = computerService.countByCompanyName(searchCompany);
-			message = "Computer(s) selected successfully !";
+			wrapper = computerService.getSelectComputerWrapperSearchCompany(
+					orderBy, currentPage, recordsPerPage, searchCompany);
 		}
-		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0 / recordsPerPage);
 
 		/*
 		 * Set attributes and VIEW
 		 */
-		Wrapper wrapper = Wrapper.builder().currentPage(currentPage)
-				.nbrOfPages(nbrOfPages).searchComputer(searchComputer)
-				.searchCompany(searchCompany).listComputers(listComputers)
-				.nbrComputers(nbrComputers).orderBy(orderBy).message(message)
-				.build();
+
 		request.setAttribute(ATT_WRAPPER, wrapper);
 		this.getServletContext().getRequestDispatcher(VIEW)
 				.forward(request, response);

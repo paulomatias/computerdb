@@ -11,6 +11,7 @@ import com.excilys.domain.Company;
 import com.excilys.persistence.CompanyDAO;
 import com.excilys.persistence.ConnectionManager;
 import com.excilys.persistence.DAOFactory;
+import com.excilys.wrapper.Wrapper;
 
 public class CompanyService {
 	private final static CompanyService instance = new CompanyService();
@@ -35,59 +36,31 @@ public class CompanyService {
 	/*
 	 * Service
 	 */
-	public List<Company> getList() {
+
+	public Wrapper getAddComputerWrapper() {
 		Connection connection = ConnectionManager.getConnection();
-		List<Company> list = null;
+		List<Company> listCompanies = null;
 		try {
 			connection.setAutoCommit(false);
-			log.info("Get list of companies");
-			list = companyDAO.getList(connection);
+			listCompanies = companyDAO.getList(connection);
 			connection.commit();
 		} catch (SQLException e) {
-			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-		} finally {
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return list;
-	}
-
-	public String getName(Long companyId) {
-		Connection connection = ConnectionManager.getConnection();
-		String name = null;
-		try {
-			connection.setAutoCommit(false);
-			log.info("Get name of company");
-			name = companyDAO.getName(connection, companyId);
-
-		} catch (SQLException e) {
 			e.printStackTrace();
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
 		} finally {
 			try {
-				if (connection != null) {
-					connection.close();
-				}
+				connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		return name;
+		Wrapper wrapper = Wrapper.builder().listCompanies(listCompanies)
+				.build();
+		return wrapper;
 	}
 
 }

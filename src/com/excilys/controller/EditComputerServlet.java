@@ -1,16 +1,12 @@
 package com.excilys.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.domain.Company;
-import com.excilys.domain.Computer;
-import com.excilys.service.CompanyService;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
 import com.excilys.transfert.ComputerDTO;
@@ -43,12 +39,9 @@ public class EditComputerServlet extends HttpServlet {
 		/*
 		 * Get instance of services by serviceManager
 		 */
+
 		ComputerService computerService = serviceManager.getComputerService();
-		CompanyService companyService = serviceManager.getCompanyService();
-		List<Company> listCompanies = companyService.getList();
-		Computer computer = computerService.get(Long.valueOf(computerId));
-		Wrapper wrapper = Wrapper.builder().computer(computer)
-				.listCompanies(listCompanies).build();
+		Wrapper wrapper = computerService.getEditComputerWrapper(computerId);
 		request.setAttribute(ATT_WRAPPER, wrapper);
 		request.getRequestDispatcher(VIEW_GET).forward(request, response);
 	}
@@ -58,15 +51,16 @@ public class EditComputerServlet extends HttpServlet {
 		/*
 		 * GetParameters
 		 */
-		String orderBy = null;
-		if (request.getParameter(PARAM_ORDER_BY) != null) {
-			orderBy = request.getParameter(PARAM_ORDER_BY);
-		}
 		String computerId = request.getParameter(PARAM_COMPUTER_ID);
 		String name = request.getParameter(PARAM_NAME);
 		String introduced = request.getParameter(PARAM_INTRODUCED);
 		String discontinued = request.getParameter(PARAM_DISCONTINUED);
 		String companyId = request.getParameter(PARAM_COMPANY);
+		int currentPage = 1;
+		if (request.getParameter(PARAM_CURRENT_PAGE) != null) {
+			currentPage = Integer.parseInt(request
+					.getParameter(PARAM_CURRENT_PAGE));
+		}
 
 		/*
 		 * Get instance of services by serviceManager
@@ -81,28 +75,16 @@ public class EditComputerServlet extends HttpServlet {
 				.discontinued(discontinued).company(new Long(companyId))
 				.build();
 
-		computerService.edit(computerDTO);
-
 		/*
 		 * Prepare attributes
 		 */
-		int currentPage = 1;
-		if (request.getParameter(PARAM_CURRENT_PAGE) != null) {
-			currentPage = Integer.parseInt(request
-					.getParameter(PARAM_CURRENT_PAGE));
-		}
-		Long nbrComputers = computerService.count();
-		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0 / recordsPerPage);
-		List<Computer> listComputers = computerService.getList(orderBy,
-				currentPage, recordsPerPage);
-		String message = "Computer edited successfully !";
 
+		Wrapper wrapper = computerService.getEditComputerWrapperPost(
+				currentPage, computerDTO);
 		/*
 		 * Set attributes and VIEW
 		 */
-		Wrapper wrapper = Wrapper.builder().currentPage(currentPage)
-				.nbrOfPages(nbrOfPages).listComputers(listComputers)
-				.nbrComputers(nbrComputers).message(message).build();
+
 		request.setAttribute(ATT_WRAPPER, wrapper);
 		request.getRequestDispatcher(VIEW_POST).forward(request, response);
 

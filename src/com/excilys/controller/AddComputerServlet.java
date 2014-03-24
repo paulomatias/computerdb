@@ -1,15 +1,12 @@
 package com.excilys.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.domain.Company;
-import com.excilys.domain.Computer;
 import com.excilys.service.CompanyService;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
@@ -41,16 +38,15 @@ public class AddComputerServlet extends HttpServlet {
 		CompanyService companyService = serviceManager.getCompanyService();
 
 		/*
-		 * Prepare attributes
+		 * Get the wrapper to return to the JSP. All functions necessary are
+		 * done in the service package.
 		 */
-		List<Company> listCompanies = companyService.getList();
+		Wrapper wrapper = companyService.getAddComputerWrapper();
 
 		/*
 		 * Set attributes and VIEW
 		 */
-		Wrapper computerWrapper = Wrapper.builder()
-				.listCompanies(listCompanies).build();
-		request.setAttribute(ATT_WRAPPER, computerWrapper);
+		request.setAttribute(ATT_WRAPPER, wrapper);
 		request.getRequestDispatcher(VIEW_GET).forward(request, response);
 	}
 
@@ -72,37 +68,28 @@ public class AddComputerServlet extends HttpServlet {
 		String companyId = request.getParameter(PARAM_COMPANY);
 
 		/*
-		 * Setting computerDTO and add to db
+		 * Setting computerDTO
 		 */
 		ComputerDTO computerDTO = ComputerDTO.builder().name(name)
 				.introduced(introduced).discontinued(discontinued)
 				.company(new Long(companyId)).build();
-		computerService.add(computerDTO);
 
 		/*
-		 * Prepare attributes
+		 * Get the wrapper to return to the JSP. All functions necessary are
+		 * done in the service package.
 		 */
 		int currentPage = 1;
 		if (request.getParameter(PARAM_CURRENT_PAGE) != null) {
 			currentPage = Integer.parseInt(request
 					.getParameter(PARAM_CURRENT_PAGE));
 		}
-		Long nbrComputers = computerService.count();
-		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
-				/ recordsPercurrentPage);
-		List<Company> listCompanies = companyService.getList();
-		List<Computer> listComputers = computerService.getList(null,
-				currentPage, recordsPercurrentPage);
 
-		String message = "Computer added successfully !";
+		Wrapper wrapper = computerService.getAddComputerWrapper(currentPage,
+				computerDTO);
 
 		/*
 		 * Set attributes and VIEW
 		 */
-		Wrapper wrapper = Wrapper.builder().currentPage(currentPage)
-				.nbrOfPages(nbrOfPages).nbrComputers(nbrComputers)
-				.listCompanies(listCompanies).listComputers(listComputers)
-				.message(message).build();
 		request.setAttribute(ATT_WRAPPER, wrapper);
 		request.getRequestDispatcher(VIEW_POST).forward(request, response);
 	}

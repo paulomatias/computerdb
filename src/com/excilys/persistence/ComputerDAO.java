@@ -38,7 +38,7 @@ public enum ComputerDAO {
 	public List<Computer> getList(Connection connection, String orderBy)
 			throws SQLException {
 
-		StringBuffer query = new StringBuffer(
+		StringBuilder query = new StringBuilder(
 				"SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id");
 		if (orderBy == null) {
 			orderBy = "computer.id ASC";
@@ -93,9 +93,9 @@ public enum ComputerDAO {
 	}
 
 	public List<Computer> getList(Connection connection, String orderBy,
-			int page, int recordsPerPage) throws SQLException {
+			Integer page, Integer recordsPerPage) throws SQLException {
 
-		StringBuffer query = new StringBuffer(
+		StringBuilder query = new StringBuilder(
 				"SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id");
 		if (orderBy == null) {
 			orderBy = "computer.id ASC";
@@ -179,7 +179,7 @@ public enum ComputerDAO {
 			String computerName, String orderBy, int page, int recordsPerPage)
 			throws SQLException {
 
-		StringBuffer query = new StringBuffer(
+		StringBuilder query = new StringBuilder(
 				"SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE computer.name=?");
 		if (orderBy == null) {
 			orderBy = "computer.id ASC";
@@ -316,7 +316,7 @@ public enum ComputerDAO {
 			String computerName, String computerCompanyName, String orderBy,
 			int page, int recordsPerPage) throws SQLException {
 
-		StringBuffer query = new StringBuffer(
+		StringBuilder query = new StringBuilder(
 				"SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE computer.name=? AND company.name=?");
 		if (orderBy == null) {
 			orderBy = "computer.id ASC";
@@ -377,7 +377,7 @@ public enum ComputerDAO {
 			String computerCompanyName, String orderBy, int page,
 			int recordsPerPage) throws SQLException {
 
-		StringBuffer query = new StringBuffer(
+		StringBuilder query = new StringBuilder(
 				"SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE company.name=?");
 		if (orderBy == null) {
 			orderBy = "computer.id ASC";

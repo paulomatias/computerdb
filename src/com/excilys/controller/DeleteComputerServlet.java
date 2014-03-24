@@ -1,14 +1,12 @@
 package com.excilys.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.domain.Computer;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
 import com.excilys.wrapper.Wrapper;
@@ -33,32 +31,23 @@ public class DeleteComputerServlet extends HttpServlet {
 		/*
 		 * GetParameters
 		 */
-		String ComputerId = request.getParameter(PARAM_COMPUTER_ID);
-		/*
-		 * Prepare attributes
-		 */
+		String computerId = request.getParameter(PARAM_COMPUTER_ID);
 		int currentPage = 1;
 		if (request.getParameter(PARAM_CURRENT_PAGE) != null) {
 			currentPage = Integer.parseInt(request
 					.getParameter(PARAM_CURRENT_PAGE));
 		}
-		Long nbrComputers = computerService.count();
-		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0 / recordsPerPage);
-		List<Computer> listComputers = computerService.getList();
-		Computer computer = Computer.builder().id(Long.valueOf(ComputerId))
-				.build();
-		// computer = computerService.get(Long.valueOf(ComputerId));
-		computerService.delete(computer);
-		listComputers = computerService.getList(null, currentPage,
-				recordsPerPage);
-		String message = "Computer deleted successfully !";
+
 		/*
-		 * Ajout du bean et du message à l'objet requête et envoie de la vue par
-		 * forward
+		 * 
 		 */
-		Wrapper wrapper = Wrapper.builder().currentPage(currentPage)
-				.nbrComputers(nbrComputers).nbrOfPages(nbrOfPages)
-				.listComputers(listComputers).message(message).build();
+		Wrapper wrapper = computerService.getDeleteComputerWrapper(currentPage,
+				computerId);
+
+		/*
+		 * 
+		 */
+
 		request.setAttribute(ATT_WRAPPER, wrapper);
 		request.getRequestDispatcher(VIEW).forward(request, response);
 

@@ -8,17 +8,22 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.domain.Company;
 import com.excilys.domain.Computer;
+import com.excilys.persistence.CompanyDAO;
 import com.excilys.persistence.ComputerDAO;
 import com.excilys.persistence.ConnectionManager;
 import com.excilys.persistence.DAOFactory;
 import com.excilys.transfert.ComputerDTO;
 import com.excilys.transfert.MapperDTO;
+import com.excilys.wrapper.Wrapper;
 
 public class ComputerService {
+	public static final Integer recordsPerPage = Wrapper.RECORDS_PER_PAGE;
 	private final static ComputerService instance = new ComputerService();
 	private static DAOFactory daoFactory = DAOFactory.getInstance();
 	private static ComputerDAO computerDAO = daoFactory.getComputerDAO();
+	private static CompanyDAO companyDAO = daoFactory.getCompanyDAO();
 	static Logger log = LoggerFactory.getLogger(ComputerService.class);
 
 	private ComputerService() {
@@ -28,318 +33,177 @@ public class ComputerService {
 		return instance;
 	}
 
-	public List<Computer> getList() {
+	public Wrapper getDashboardWrapper(int currentPage, String orderBy) {
 
 		Connection connection = ConnectionManager.getConnection();
-		List<Computer> list = null;
+		Wrapper wrapper = null;
 		try {
 			connection.setAutoCommit(false);
-			log.info("Get list of computers");
-			list = computerDAO.getList(connection, null);
+			Long nbrComputers = computerDAO.count(connection);
+			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+					/ recordsPerPage);
+			List<Computer> listComputers = computerDAO.getList(connection,
+					orderBy, currentPage, recordsPerPage);
+			String message = "Welcome to your computer database !";
+			wrapper = Wrapper.builder().currentPage(currentPage)
+					.nbrOfPages(nbrOfPages).nbrComputers(nbrComputers)
+					.listComputers(listComputers).message(message)
+					.orderBy(orderBy).build();
 			connection.commit();
 		} catch (SQLException e) {
-			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-		} finally {
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return list;
-	}
-
-	public List<Computer> getList(String orderBy, int page, int recordsPerPage) {
-		Connection connection = ConnectionManager.getConnection();
-		List<Computer> list = null;
-		try {
-			connection.setAutoCommit(false);
-			log.info("Get list of computers with pagination");
-			list = computerDAO.getList(connection, orderBy, page,
-					recordsPerPage);
-			connection.commit();
-		} catch (SQLException e) {
 			e.printStackTrace();
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
 		} finally {
 			try {
-				if (connection != null) {
-					connection.close();
-				}
+				connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		return list;
+		return wrapper;
 	}
 
-	public void add(ComputerDTO computerDTO) {
+	public Wrapper getAddComputerWrapper(int currentPage,
+			ComputerDTO computerDTO) {
 		Connection connection = ConnectionManager.getConnection();
+		MapperDTO mapper = new MapperDTO();
+		Wrapper wrapper = null;
+
 		try {
 			connection.setAutoCommit(false);
-			log.info("Adding computer...");
-			MapperDTO mapper = new MapperDTO();
-			Computer computer = null;
-			try {
-				computer = mapper.toComputer(computerDTO);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			Computer computer = mapper.toComputer(computerDTO);
 			computerDAO.add(connection, computer);
+			Long nbrComputers = computerDAO.count(connection);
+			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+					/ recordsPerPage);
+			List<Company> listCompanies = companyDAO.getList(connection);
+			List<Computer> listComputers = computerDAO.getList(connection,
+					null, currentPage, recordsPerPage);
+			String message = "Computer added successfully !";
+			wrapper = Wrapper.builder().currentPage(currentPage)
+					.nbrOfPages(nbrOfPages).nbrComputers(nbrComputers)
+					.listCompanies(listCompanies).listComputers(listComputers)
+					.message(message).build();
 			connection.commit();
-			log.info("Computer added : " + computer);
 		} catch (SQLException e) {
-			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-		} finally {
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public List<Computer> getListByName(String computerName, String orderBy,
-			int page, int recordsPerPage) {
-		List<Computer> list = null;
-		Connection connection = ConnectionManager.getConnection();
-		try {
-			connection.setAutoCommit(false);
-			log.info("Get list of computers by computer name with pagination");
-			list = computerDAO.getListByName(connection, computerName, orderBy,
-					page, recordsPerPage);
-			connection.commit();
-		} catch (SQLException e) {
 			e.printStackTrace();
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
+		} catch (ParseException e) {
+			e.printStackTrace();
 		} finally {
 			try {
-				if (connection != null) {
-					connection.close();
-				}
+				connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		return list;
+		return wrapper;
 	}
 
-	public void delete(Computer computer) {
-
+	public Wrapper getDeleteComputerWrapper(int currentPage, String computerId) {
 		Connection connection = ConnectionManager.getConnection();
+		Wrapper wrapper = null;
 		try {
 			connection.setAutoCommit(false);
-			log.info("Deleting computer...");
+			Long nbrComputers;
+			nbrComputers = computerDAO.count(connection);
+			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+					/ recordsPerPage);
+			List<Computer> listComputers = computerDAO
+					.getList(connection, null);
+			Computer computer = Computer.builder().id(Long.valueOf(computerId))
+					.build();
 			computerDAO.delete(connection, computer);
-			connection.commit();
-			log.info("computer with id n°" + computer.getId() + " deleted : "
-					+ computer);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		} finally {
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void edit(ComputerDTO computerDTO) {
-		Connection connection = ConnectionManager.getConnection();
-		try {
-			connection.setAutoCommit(false);
-			log.info("Editing computer...");
-			MapperDTO mapper = new MapperDTO();
-			Computer computer = null;
-			try {
-				computer = mapper.toComputer(computerDTO);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			computerDAO.edit(connection, computer);
-			connection.commit();
-			log.info("Computer with id n°" + computer.getId() + " edited : "
-					+ computer);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		} finally {
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public Long count() {
-
-		Connection connection = ConnectionManager.getConnection();
-		Long count = null;
-		try {
-			connection.setAutoCommit(false);
-			log.info("Counting all computers...");
-			count = computerDAO.count(connection);
-			connection.commit();
-			log.info(count + " computer(s) found");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		} finally {
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return count;
-	}
-
-	public Computer get(Long computerId) {
-		Connection connection = ConnectionManager.getConnection();
-		Computer computer = null;
-		try {
-			connection.setAutoCommit(false);
-			log.info("Get a computer with id");
-			try {
-				computer = computerDAO.get(connection, computerId);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			connection.commit();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		} finally {
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return computer;
-	}
-
-	public List<Computer> getListByNameAndCompanyName(String computerName,
-			String computerCompanyName, String orderBy, int page,
-			int recordsPerPage) {
-
-		Connection connection = ConnectionManager.getConnection();
-		List<Computer> list = null;
-		try {
-			connection.setAutoCommit(false);
-			log.info("Get list by computer name and company name with pagination");
-			list = computerDAO.getListByNameAndCompanyName(connection,
-					computerName, computerCompanyName, orderBy, page,
+			listComputers = computerDAO.getList(connection, null, currentPage,
 					recordsPerPage);
+			String message = "Computer deleted successfully !";
+			wrapper = Wrapper.builder().currentPage(currentPage)
+					.nbrComputers(nbrComputers).nbrOfPages(nbrOfPages)
+					.listComputers(listComputers).message(message).build();
 			connection.commit();
 		} catch (SQLException e) {
-			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
+			e.printStackTrace();
 		} finally {
 			try {
-				if (connection != null) {
-					connection.close();
-				}
+				connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		return list;
+		return wrapper;
 	}
 
-	public List<Computer> getListByCompanyName(String computerCompanyName,
-			String orderBy, int page, int recordsPerPage) {
+	public Wrapper getEditComputerWrapper(String computerId) {
 
 		Connection connection = ConnectionManager.getConnection();
-		List<Computer> list = null;
+		Wrapper wrapper = null;
 		try {
 			connection.setAutoCommit(false);
-			log.info("Get list of computers by company name with pagination");
-			list = computerDAO.getListByCompanyName(connection,
-					computerCompanyName, orderBy, page, recordsPerPage);
+			List<Company> listCompanies;
+			listCompanies = companyDAO.getList(connection);
+			Computer computer = computerDAO.get(connection,
+					Long.valueOf(computerId));
+			wrapper = Wrapper.builder().computer(computer)
+					.listCompanies(listCompanies).build();
 			connection.commit();
 		} catch (SQLException e) {
-			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
 		} finally {
 			try {
-				if (connection != null) {
-					connection.close();
-				}
+				connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		return list;
+		return wrapper;
 	}
 
-	public Long countByName(String name) {
+	public Wrapper getEditComputerWrapperPost(int currentPage,
+			ComputerDTO computerDTO) {
 
 		Connection connection = ConnectionManager.getConnection();
-		Long count = null;
+		Wrapper wrapper = null;
+		MapperDTO mapper = new MapperDTO();
+
+		Computer computer;
 		try {
 			connection.setAutoCommit(false);
-			log.info("Counting computers by name...");
-			count = computerDAO.countByName(connection, name);
+			computer = mapper.toComputer(computerDTO);
+			computerDAO.edit(connection, computer);
+			Long nbrComputers = computerDAO.count(connection);
+			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+					/ recordsPerPage);
+			List<Computer> listComputers = computerDAO.getList(connection,
+					null, currentPage, recordsPerPage);
+			String message = "Computer edited successfully !";
+			wrapper = Wrapper.builder().currentPage(currentPage)
+					.nbrOfPages(nbrOfPages).listComputers(listComputers)
+					.nbrComputers(nbrComputers).message(message).build();
 			connection.commit();
-			log.info(count + " computer(s) found");
+		} catch (ParseException e) {
+			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -349,72 +213,161 @@ public class ComputerService {
 			}
 		} finally {
 			try {
-				if (connection != null) {
-					connection.close();
-				}
+				connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		return count;
+
+		return wrapper;
 	}
 
-	public Long countByNameAndCompanyName(String name, String companyName) {
+	public Wrapper getSelectComputerWrapperNoSearch(String orderBy,
+			int currentPage, Integer recordsperpage2) {
 
 		Connection connection = ConnectionManager.getConnection();
-		Long count = null;
+		Wrapper wrapper = null;
 		try {
 			connection.setAutoCommit(false);
-			log.info("Counting computers by name and company name...");
-			count = computerDAO.countByNameAndCompanyName(connection, name,
-					companyName);
+			List<Computer> listComputers = computerDAO.getList(connection,
+					orderBy, currentPage, recordsPerPage);
+			Long nbrComputers = computerDAO.count(connection);
+			String message = "Welcome to your computer database !";
+			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+					/ recordsPerPage);
+			wrapper = Wrapper.builder().currentPage(currentPage)
+					.nbrOfPages(nbrOfPages).listComputers(listComputers)
+					.nbrComputers(nbrComputers).orderBy(orderBy)
+					.message(message).build();
 			connection.commit();
-			log.info(count + " computer(s) found");
 		} catch (SQLException e) {
-			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
+			e.printStackTrace();
 		} finally {
 			try {
-				if (connection != null) {
-					connection.close();
-				}
+				connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		return count;
+		return wrapper;
 	}
 
-	public Long countByCompanyName(String companyName) {
+	public Wrapper getSelectComputerWrapperSearchComputer(String orderBy,
+			Integer currentPage, Integer recordsperpage, String searchComputer) {
+		Connection connection = ConnectionManager.getConnection();
+		Wrapper wrapper = null;
+		try {
+			connection.setAutoCommit(false);
+			List<Computer> listComputers = computerDAO.getListByName(
+					connection, searchComputer, orderBy, currentPage,
+					recordsPerPage);
+			Long nbrComputers = computerDAO.countByName(connection,
+					searchComputer);
+			String message = "Computer(s) selected successfully !";
+			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+					/ recordsPerPage);
+			wrapper = Wrapper.builder().currentPage(currentPage)
+					.nbrOfPages(nbrOfPages).listComputers(listComputers)
+					.nbrComputers(nbrComputers).searchComputer(searchComputer)
+					.orderBy(orderBy).message(message).build();
+			connection.commit();
+		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return wrapper;
+	}
+
+	public Wrapper getSelectComputerWrapperSearchCompanySearchComputer(
+			String orderBy, Integer currentPage, Integer recordsperpage,
+			String searchCompany, String searchComputer) {
 
 		Connection connection = ConnectionManager.getConnection();
-		Long count = null;
+		Wrapper wrapper = null;
 		try {
 			connection.setAutoCommit(false);
-			log.info("Counting by company  name...");
-			count = computerDAO.countByCompanyName(connection, companyName);
+			System.out.println("oihreoh");
+			List<Computer> listComputers = computerDAO
+					.getListByNameAndCompanyName(connection, searchComputer,
+							searchCompany, orderBy, currentPage, recordsPerPage);
+			Long nbrComputers = computerDAO.countByNameAndCompanyName(
+					connection, searchCompany, searchCompany);
+			String message = "Computer(s) selected successfully !";
+			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+					/ recordsPerPage);
+			wrapper = Wrapper.builder().currentPage(currentPage)
+					.nbrOfPages(nbrOfPages).listComputers(listComputers)
+					.nbrComputers(nbrComputers).searchComputer(searchComputer)
+					.searchCompany(searchCompany).orderBy(orderBy)
+					.message(message).build();
 			connection.commit();
-			log.info(count + " computer(s) found");
 		} catch (SQLException e) {
-			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
+			e.printStackTrace();
 		} finally {
 			try {
-				if (connection != null) {
-					connection.close();
-				}
+				connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		return count;
+		return wrapper;
 	}
+
+	public Wrapper getSelectComputerWrapperSearchCompany(String orderBy,
+			Integer currentPage, Integer recordsperpage, String searchCompany) {
+
+		Connection connection = ConnectionManager.getConnection();
+		Wrapper wrapper = null;
+		try {
+			connection.setAutoCommit(false);
+			List<Computer> listComputers = computerDAO.getListByCompanyName(
+					connection, searchCompany, orderBy, currentPage,
+					recordsPerPage);
+			Long nbrComputers = computerDAO.countByCompanyName(connection,
+					searchCompany);
+			String message = "Computer(s) selected successfully !";
+			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
+					/ recordsPerPage);
+			wrapper = Wrapper.builder().currentPage(currentPage)
+					.nbrOfPages(nbrOfPages).listComputers(listComputers)
+					.nbrComputers(nbrComputers).searchCompany(searchCompany)
+					.orderBy(orderBy).message(message).build();
+			connection.commit();
+		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return wrapper;
+	}
+
 }

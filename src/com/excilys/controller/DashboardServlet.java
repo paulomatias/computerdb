@@ -1,14 +1,12 @@
 package com.excilys.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.domain.Computer;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
 import com.excilys.wrapper.Wrapper;
@@ -30,6 +28,7 @@ public class DashboardServlet extends HttpServlet {
 		 * Get instance of services by serviceManager
 		 */
 		ComputerService computerService = serviceManager.getComputerService();
+
 		/*
 		 * Prepare attributes
 		 */
@@ -42,19 +41,13 @@ public class DashboardServlet extends HttpServlet {
 		if (request.getParameter(PARAM_ORDER_BY) != null) {
 			orderBy = request.getParameter(PARAM_ORDER_BY);
 		}
-		Long nbrComputers = computerService.count();
-		int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
-				/ recordsPercurrentPage);
-		List<Computer> listComputers = computerService.getList(orderBy,
-				currentPage, recordsPercurrentPage);
-		String message = "Welcome to your computer database !";
+
+		Wrapper wrapper = computerService.getDashboardWrapper(currentPage,
+				orderBy);
+
 		/*
 		 * Set attributes and VIEW
 		 */
-		Wrapper wrapper = Wrapper.builder().currentPage(currentPage)
-				.nbrOfPages(nbrOfPages).nbrComputers(nbrComputers)
-				.listComputers(listComputers).message(message).orderBy(orderBy)
-				.build();
 		request.setAttribute(ATT_WRAPPER, wrapper);
 		request.getRequestDispatcher(VIEW).forward(request, response);
 
