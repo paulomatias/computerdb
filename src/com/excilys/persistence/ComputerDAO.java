@@ -303,9 +303,9 @@ public enum ComputerDAO {
 		PreparedStatement statement = connection.prepareStatement(query);
 		ResultSet resultSet = statement.executeQuery();
 		Long nbrComputers = null;
-		while (resultSet.next()) {
-			nbrComputers = resultSet.getLong(1);
-		}
+		resultSet.next();
+		nbrComputers = resultSet.getLong(1);
+
 		if (resultSet != null)
 			resultSet.close();
 		if (statement != null)
@@ -480,9 +480,8 @@ public enum ComputerDAO {
 		PreparedStatement statement = connection.prepareStatement(query);
 		statement.setString(1, name);
 		ResultSet resultSet = statement.executeQuery();
-		while (resultSet.next()) {
-			nbrComputers = resultSet.getLong(1);
-		}
+		resultSet.next();
+		nbrComputers = resultSet.getLong(1);
 		if (resultSet != null)
 			resultSet.close();
 		if (statement != null)
@@ -503,9 +502,8 @@ public enum ComputerDAO {
 		statement.setString(1, name);
 		statement.setString(2, companyName);
 		ResultSet resultSet = statement.executeQuery();
-		while (resultSet.next()) {
-			nbrComputers = resultSet.getLong(1);
-		}
+		resultSet.next();
+		nbrComputers = resultSet.getLong(1);
 		if (resultSet != null)
 			resultSet.close();
 		if (statement != null)
@@ -524,9 +522,8 @@ public enum ComputerDAO {
 		PreparedStatement statement = connection.prepareStatement(query);
 		statement.setString(1, name);
 		ResultSet resultSet = statement.executeQuery();
-		while (resultSet.next()) {
-			nbrComputers = resultSet.getLong(1);
-		}
+		resultSet.next();
+		nbrComputers = resultSet.getLong(1);
 		if (resultSet != null)
 			resultSet.close();
 		if (statement != null)
