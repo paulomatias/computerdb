@@ -13,22 +13,26 @@ public class Validator {
 		Integer error = new Integer(0);
 
 		if (computerDTO.getName() == null
-				&& computerDTO.getName().trim().isEmpty()) {
-			error = 1;
+				|| computerDTO.getName().trim().isEmpty()) {
+			error += 1;
 		}
 
-		try {
-			FORMAT.parse(computerDTO.getIntroduced());
-		} catch (ParseException e) {
-			error = 2;
-			e.printStackTrace();
+		if (computerDTO.getIntroduced() != null
+				&& !computerDTO.getIntroduced().equals("")) {
+			try {
+				FORMAT.parse(computerDTO.getIntroduced());
+			} catch (ParseException e) {
+				error += 2;
+			}
 		}
 
-		try {
-			FORMAT.parse(computerDTO.getDiscontinued());
-		} catch (ParseException e) {
-			error = 3;
-			e.printStackTrace();
+		if (computerDTO.getDiscontinued() != null
+				&& !computerDTO.getDiscontinued().equals("")) {
+			try {
+				FORMAT.parse(computerDTO.getDiscontinued());
+			} catch (ParseException e) {
+				error += 4;
+			}
 		}
 		return error;
 	}

@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.domain.Company;
 import com.excilys.persistence.CompanyDAO;
 import com.excilys.persistence.ConnectionManager;
@@ -23,6 +26,7 @@ public enum CompanyService {
 
 	private static DAOFactory daoFactory = DAOFactory.getInstance();
 	private static CompanyDAO companyDAO = daoFactory.getCompanyDAO();
+	static Logger log = LoggerFactory.getLogger(CompanyService.class);
 
 	/*
 	 * Return the wrapper to the addServlet, using transactions
@@ -32,6 +36,7 @@ public enum CompanyService {
 		List<Company> listCompanies = null;
 		try {
 			connection.setAutoCommit(false);
+			log.info("Counting number of companies...");
 			listCompanies = companyDAO.getList(connection);
 			connection.commit();
 		} catch (SQLException e) {

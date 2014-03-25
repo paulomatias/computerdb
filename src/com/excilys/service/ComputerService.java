@@ -59,7 +59,7 @@ public enum ComputerService {
 					.listComputers(listComputers).message(message)
 					.orderBy(orderBy).build();
 			connection.commit();
-			log.info("Transactions successful");
+			log.info("Transactions successful\n");
 		} catch (SQLException e) {
 			try {
 				connection.rollback();
@@ -107,7 +107,7 @@ public enum ComputerService {
 					.message(message).build();
 			logDAO.setLog(connection, computer, "insert");
 			connection.commit();
-			log.info("Transaction successful");
+			log.info("Transaction successful\n");
 		} catch (SQLException e) {
 			try {
 				connection.rollback();
@@ -152,6 +152,7 @@ public enum ComputerService {
 					.nbrComputers(nbrComputers).nbrOfPages(nbrOfPages)
 					.listComputers(listComputers).message(message).build();
 			logDAO.setLog(connection, computer, "delete");
+			log.info("Transaction successful\n");
 			connection.commit();
 		} catch (SQLException e) {
 			try {
@@ -189,6 +190,7 @@ public enum ComputerService {
 			wrapper = Wrapper.builder().computerDTO(computerDTO)
 					.listCompanies(listCompanies).build();
 			logDAO.setLog(connection, computer, "update");
+			log.info("Transaction successful\n");
 			connection.commit();
 		} catch (SQLException e) {
 			try {
@@ -237,6 +239,7 @@ public enum ComputerService {
 					.currentPage(currentPage).nbrOfPages(nbrOfPages)
 					.listComputers(listComputers).nbrComputers(nbrComputers)
 					.message(message).build();
+			log.info("Transaction successful\n");
 			connection.commit();
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -276,6 +279,7 @@ public enum ComputerService {
 					.nbrOfPages(nbrOfPages).listComputers(listComputers)
 					.nbrComputers(nbrComputers).searchComputer(searchComputer)
 					.orderBy(orderBy).message(message).build();
+			log.info("Transaction successful\n");
 			connection.commit();
 		} catch (SQLException e) {
 			try {
@@ -316,6 +320,7 @@ public enum ComputerService {
 					.nbrComputers(nbrComputers).searchComputer(searchComputer)
 					.searchCompany(searchCompany).orderBy(orderBy)
 					.message(message).build();
+			log.info("Transaction successful\n");
 			connection.commit();
 		} catch (SQLException e) {
 			try {
@@ -353,6 +358,7 @@ public enum ComputerService {
 					.nbrOfPages(nbrOfPages).listComputers(listComputers)
 					.nbrComputers(nbrComputers).searchCompany(searchCompany)
 					.orderBy(orderBy).message(message).build();
+			log.info("Transaction successful\n");
 			connection.commit();
 		} catch (SQLException e) {
 			try {

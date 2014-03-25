@@ -23,6 +23,7 @@ public class AddComputerServlet extends HttpServlet {
 	public static final String PARAM_COMPANY = "company";
 	public static final String PARAM_CURRENT_PAGE = "currentPage";
 	public static final String ATT_WRAPPER = "wrapper";
+	public static final String ATT_ERROR = "error";
 	public static final String ATT_ERROR_NAME = "errorName";
 	public static final String ATT_ERROR_INTRODUCED = "errorIntroduced";
 	public static final String ATT_ERROR_DISCONTINUED = "errorDiscontinued";
@@ -88,7 +89,11 @@ public class AddComputerServlet extends HttpServlet {
 		}
 
 		Validator validator = new Validator();
-		if (validator.getValidation(computerDTO).equals(0)) {
+		switch (validator.getValidation(computerDTO)) {
+		/*
+		 * normal case
+		 */
+		case 0:
 			/*
 			 * Get the wrapper to return to the JSP. All functions necessary are
 			 * done in the service package.
@@ -99,23 +104,65 @@ public class AddComputerServlet extends HttpServlet {
 			/*
 			 * Set attributes and VIEW
 			 */
+			request.setAttribute(ATT_ERROR, false);
 			request.setAttribute(ATT_WRAPPER, wrapper);
 			request.getRequestDispatcher(VIEW_POST).forward(request, response);
-		}
-		if (validator.getValidation(computerDTO).equals(1)) {
+			break;
+		/*
+		 * error cases
+		 */
+		case 1:
+			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_NAME,
-					"You have not answered all required fields");
-			request.getRequestDispatcher(VIEW_POST).forward(request, response);
-		}
-		if (validator.getValidation(computerDTO).equals(2)) {
+					"The name of the computer is a required field.");
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
+		case 2:
+			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_INTRODUCED,
-					"You have not given a correct date");
-			request.getRequestDispatcher(VIEW_POST).forward(request, response);
-		}
-		if (validator.getValidation(computerDTO).equals(3)) {
+					"Your introduced date is not correct.");
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
+		case 3:
+			request.setAttribute(ATT_ERROR, true);
+			request.setAttribute(ATT_ERROR_NAME,
+					"The name of the computer is a required field.");
+			request.setAttribute(ATT_ERROR_INTRODUCED,
+					"Your introduced date is not correct.");
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
+		case 4:
+			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_DISCONTINUED,
-					"You have not given a correct date");
-			request.getRequestDispatcher(VIEW_POST).forward(request, response);
+					"Your discontinued date is not correct.");
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+
+		case 5:
+			request.setAttribute(ATT_ERROR, true);
+			request.setAttribute(ATT_ERROR_NAME,
+					"The name of the computer is a required field.");
+			request.setAttribute(ATT_ERROR_DISCONTINUED,
+					"Your discontinued date is not correct.");
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
+		case 6:
+			request.setAttribute(ATT_ERROR, true);
+			request.setAttribute(ATT_ERROR_INTRODUCED,
+					"Your introduced date is not correct.");
+			request.setAttribute(ATT_ERROR_DISCONTINUED,
+					"Your discontinued date is not correct.");
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
+		case 7:
+			request.setAttribute(ATT_ERROR, true);
+			request.setAttribute(ATT_ERROR_NAME,
+					"The name of the computer is a required field.");
+			request.setAttribute(ATT_ERROR_INTRODUCED,
+					"Your introduced date is not correct.");
+			request.setAttribute(ATT_ERROR_DISCONTINUED,
+					"Your discontinued date is not correct.");
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
 		}
 	}
 }

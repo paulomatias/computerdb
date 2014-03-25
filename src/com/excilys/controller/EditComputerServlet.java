@@ -24,6 +24,7 @@ public class EditComputerServlet extends HttpServlet {
 	public static final String PARAM_CURRENT_PAGE = "currentPage";
 	public static final String PARAM_ORDER_BY = "orderBy";
 	public static final String ATT_WRAPPER = "wrapper";
+	public static final String ATT_ERROR = "error";
 	public static final String ATT_ERROR_NAME = "errorName";
 	public static final String ATT_ERROR_INTRODUCED = "errorIntroduced";
 	public static final String ATT_ERROR_DISCONTINUED = "errorDiscontinued";
@@ -75,6 +76,11 @@ public class EditComputerServlet extends HttpServlet {
 			currentPage = Integer.parseInt(request
 					.getParameter(PARAM_CURRENT_PAGE));
 		}
+		Long computerIdL;
+		if (!computerId.equals("")) {
+			computerIdL = Long.valueOf(computerId);
+		} else
+			computerIdL = 0L;
 
 		/*
 		 * Get instance of services by serviceManager
@@ -84,41 +90,99 @@ public class EditComputerServlet extends HttpServlet {
 		/*
 		 * Setting computerDTO
 		 */
-		ComputerDTO computerDTO = ComputerDTO.builder()
-				.id(Long.valueOf(computerId)).name(name).introduced(introduced)
-				.discontinued(discontinued).company(new Long(companyId))
-				.build();
+		ComputerDTO computerDTO = ComputerDTO.builder().id(computerIdL)
+				.name(name).introduced(introduced).discontinued(discontinued)
+				.company(new Long(companyId)).build();
 
 		Validator validator = new Validator();
-		if (validator.getValidation(computerDTO).equals(0)) {
+		switch (validator.getValidation(computerDTO)) {
+		/*
+		 * normal case
+		 */
+		case 0:
 			/*
 			 * Get the wrapper to return to the JSP. All functions necessary are
 			 * done in the service package.
 			 */
 			Wrapper wrapper = computerService.getEditComputerWrapperPost(
 					currentPage, computerDTO);
-
 			/*
 			 * Set attributes and VIEW
 			 */
+			request.getRequestDispatcher(VIEW_POST).forward(request, response);
+			request.setAttribute(ATT_ERROR, false);
 			request.setAttribute(ATT_WRAPPER, wrapper);
 			request.getRequestDispatcher(VIEW_POST).forward(request, response);
-		}
-		if (validator.getValidation(computerDTO).equals(1)) {
+			break;
+		/*
+		 * error cases
+		 */
+		case 1:
+			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_NAME,
-					"You have not answered all required fields");
-			request.getRequestDispatcher(VIEW_POST).forward(request, response);
-		}
-		if (validator.getValidation(computerDTO).equals(2)) {
+					"The name of the computer is a required field.");
+			wrapper = computerService.getEditComputerWrapper(computerId);
+			request.setAttribute(ATT_WRAPPER, wrapper);
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
+		case 2:
+			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_INTRODUCED,
-					"You have not given a correct date");
-			request.getRequestDispatcher(VIEW_POST).forward(request, response);
-		}
-		if (validator.getValidation(computerDTO).equals(3)) {
+					"Your introduced date is not correct.");
+			wrapper = computerService.getEditComputerWrapper(computerId);
+			request.setAttribute(ATT_WRAPPER, wrapper);
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
+		case 3:
+			request.setAttribute(ATT_ERROR, true);
+			request.setAttribute(ATT_ERROR_NAME,
+					"The name of the computer is a required field.");
+			request.setAttribute(ATT_ERROR_INTRODUCED,
+					"Your introduced date is not correct.");
+			wrapper = computerService.getEditComputerWrapper(computerId);
+			request.setAttribute(ATT_WRAPPER, wrapper);
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
+		case 4:
+			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_DISCONTINUED,
-					"You have not given a correct date");
-			request.getRequestDispatcher(VIEW_POST).forward(request, response);
+					"Your discontinued date is not correct.");
+			wrapper = computerService.getEditComputerWrapper(computerId);
+			request.setAttribute(ATT_WRAPPER, wrapper);
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
+		case 5:
+			request.setAttribute(ATT_ERROR, true);
+			request.setAttribute(ATT_ERROR_NAME,
+					"The name of the computer is a required field.");
+			request.setAttribute(ATT_ERROR_DISCONTINUED,
+					"Your discontinued date is not correct.");
+			wrapper = computerService.getEditComputerWrapper(computerId);
+			request.setAttribute(ATT_WRAPPER, wrapper);
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
+		case 6:
+			request.setAttribute(ATT_ERROR, true);
+			request.setAttribute(ATT_ERROR_INTRODUCED,
+					"Your introduced date is not correct.");
+			request.setAttribute(ATT_ERROR_DISCONTINUED,
+					"Your discontinued date is not correct.");
+			wrapper = computerService.getEditComputerWrapper(computerId);
+			request.setAttribute(ATT_WRAPPER, wrapper);
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
+		case 7:
+			request.setAttribute(ATT_ERROR, true);
+			request.setAttribute(ATT_ERROR_NAME,
+					"The name of the computer is a required field.");
+			request.setAttribute(ATT_ERROR_INTRODUCED,
+					"Your introduced date is not correct.");
+			request.setAttribute(ATT_ERROR_DISCONTINUED,
+					"Your discontinued date is not correct.");
+			wrapper = computerService.getEditComputerWrapper(computerId);
+			request.setAttribute(ATT_WRAPPER, wrapper);
+			request.getRequestDispatcher(VIEW_GET).forward(request, response);
+			break;
 		}
 	}
-
 }

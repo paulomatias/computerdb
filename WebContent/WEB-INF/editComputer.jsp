@@ -4,6 +4,14 @@
 
 <section id="main">
 	<h1 id="homeTitle">Edit the following computer !</h1>
+	<c:if test="${error==true}">
+		<c:out value="${errorName}"></c:out>
+		<br />
+		<c:out value="${errorIntroduced}"></c:out>
+		<br />
+		<c:out value="${errorDiscontinued}"></c:out>
+		<br />
+	</c:if>
 	<form
 		action="/ProjetWebExcilys/EditComputerServlet?id=${wrapper.computerDTO.id}"
 		method="POST">
