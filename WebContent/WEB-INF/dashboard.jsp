@@ -1,4 +1,4 @@
-<jsp:include page="include/header.jsp" />
+<jsp:include page="include/header.jsp" />log
 <%@ page pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %> 
@@ -65,14 +65,14 @@
 			</c:if>
 		</thead>
 		<tbody>
-			<c:forEach items="${wrapper.listComputers}" var="var">
+			<c:forEach items="${wrapper.listComputersDTO}" var="var">
 				<tr>
 					<td><a
 						href="/ProjetWebExcilys/EditComputerServlet?id=${var.id}"
 						title="edit this computer"><c:out value="${var.name}" /></a></td>
 					<td><c:out value="${var.introduced}" /></td>
 					<td><c:out value="${var.discontinued}" /></td>
-					<td><c:out value="${var.company.name} " /></td>
+					<td><c:out value="${var.companyName} " /></td>
 					<td><a class="btn danger" id="delete"
 						href="/ProjetWebExcilys/DeleteComputerServlet?id=${var.id}">Delete</a></td>
 				</tr>

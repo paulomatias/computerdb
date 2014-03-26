@@ -27,8 +27,9 @@ public enum CompanyDAO {
 	/*
 	 * Return the company list
 	 */
-	public List<Company> getList(Connection connection) throws SQLException {
+	public List<Company> getList() throws SQLException {
 
+		Connection connection = ConnectionManager.getConnection();
 		String GET_ALL = "SELECT id, name FROM `computer-database-db`.`company`;";
 		List<Company> listCompanies = new ArrayList<Company>();
 		PreparedStatement statement = connection.prepareStatement(GET_ALL);
@@ -48,9 +49,9 @@ public enum CompanyDAO {
 	/*
 	 * Return the name of a company using its id
 	 */
-	public String getName(Connection connection, Long companyId)
-			throws SQLException {
+	public String getName(Long companyId) throws SQLException {
 
+		Connection connection = ConnectionManager.getConnection();
 		String GET_NAME = "SELECT id, name FROM `computer-database-db`.`company` WHERE id=?;";
 		String name = null;
 		PreparedStatement statement = connection.prepareStatement(GET_NAME);

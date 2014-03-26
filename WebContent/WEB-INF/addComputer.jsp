@@ -43,7 +43,7 @@
 				<div class="input">
 					<select name="company">
 						<option value="0">--</option>
-						<c:forEach items="${wrapper.listCompanies}" var="var">
+						<c:forEach items="${wrapper.listCompaniesDTO}" var="var">
 							<option value="${var.id}">${var.name}</option>
 						</c:forEach>
 					</select>

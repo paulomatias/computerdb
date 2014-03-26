@@ -49,15 +49,30 @@ public enum ConnectionManager {
 	 * Get connection
 	 */
 	public static Connection getConnection() {
+		return connectionThread.get();
+	}
+
+	/*
+	 * Open connection
+	 */
+	public static void openConnection() throws SQLException {
 		if (connectionPool == null) {
 			initialize();
 		}
-		try {
-			connectionThread.set(connectionPool.getConnection());
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (connectionThread != null && connectionThread.get() != null
+				&& !connectionThread.get().isClosed()) {
+			connectionThread.get().close();
 		}
-		return connectionThread.get();
+		connectionThread.set(connectionPool.getConnection());
+	}
 
+	/*
+	 * Close connection
+	 */
+	public static void closeConnection() throws SQLException {
+		if (connectionThread != null && connectionThread.get() != null
+				&& !connectionThread.get().isClosed()) {
+			connectionThread.get().close();
+		}
 	}
 }

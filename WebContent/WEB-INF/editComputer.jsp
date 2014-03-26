@@ -48,9 +48,9 @@
 				<div class="input">
 					<select name="company">
 						<option value="0">--</option>
-						<c:forEach items="${wrapper.listCompanies}" var="var">
+						<c:forEach items="${wrapper.listCompaniesDTO}" var="var">
 							<c:choose>
-								<c:when test="${var.id==wrapper.computerDTO.company}">
+								<c:when test="${var.id==wrapper.computerDTO.companyId}">
 									<option value="${var.id}" selected="selected">${var.name}</option>
 								</c:when>
 								<c:otherwise>

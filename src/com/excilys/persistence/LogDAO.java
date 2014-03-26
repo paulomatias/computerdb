@@ -17,8 +17,9 @@ public enum LogDAO {
 		return INSTANCE;
 	}
 
-	public void setLog(Connection connection, Computer computer,
-			String operation) throws SQLException {
+	public void setLog(Computer computer, String operation) throws SQLException {
+
+		Connection connection = ConnectionManager.getConnection();
 		String query = new String(
 				"INSERT INTO `computer-database-db`.`log` (computer,name_computer,kind_of_change) VALUES (?,?,?)");
 		PreparedStatement statement = connection.prepareStatement(query);

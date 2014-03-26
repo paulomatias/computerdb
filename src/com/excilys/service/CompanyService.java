@@ -1,6 +1,5 @@
 package com.excilys.service;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -11,7 +10,7 @@ import com.excilys.domain.Company;
 import com.excilys.persistence.CompanyDAO;
 import com.excilys.persistence.ConnectionManager;
 import com.excilys.persistence.DAOFactory;
-import com.excilys.wrapper.Wrapper;
+import com.excilys.wrapper.ComputerWrapper;
 
 /* Singleton : enum will ensure that we really have a singleton (otherwise, a exploit can be done with the JVM to duplicate objects */
 public enum CompanyService {
@@ -31,30 +30,31 @@ public enum CompanyService {
 	/*
 	 * Return the wrapper to the addServlet, using transactions
 	 */
-	public Wrapper getAddComputerWrapper() {
-		Connection connection = ConnectionManager.getConnection();
+	public ComputerWrapper addComputer() {
+
 		List<Company> listCompanies = null;
 		try {
-			connection.setAutoCommit(false);
+			ConnectionManager.openConnection();
+			ConnectionManager.getConnection().setAutoCommit(false);
 			log.info("Counting number of companies...");
-			listCompanies = companyDAO.getList(connection);
-			connection.commit();
+			listCompanies = companyDAO.getList();
+			ConnectionManager.getConnection().commit();
 		} catch (SQLException e) {
 			try {
-				connection.rollback();
+				ConnectionManager.getConnection().rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
 			e.printStackTrace();
 		} finally {
 			try {
-				connection.close();
+				ConnectionManager.closeConnection();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		Wrapper wrapper = Wrapper.builder().listCompanies(listCompanies)
-				.build();
+		ComputerWrapper wrapper = ComputerWrapper.builder()
+				.listCompanies(listCompanies).build();
 		return wrapper;
 	}
 

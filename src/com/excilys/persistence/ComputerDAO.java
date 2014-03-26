@@ -33,8 +33,8 @@ public enum ComputerDAO {
 	/*
 	 * Return the list of computers, ordered
 	 */
-	public List<Computer> getList(Connection connection, String orderBy)
-			throws SQLException {
+	public List<Computer> getList(String orderBy) throws SQLException {
+		Connection connection = ConnectionManager.getConnection();
 
 		StringBuilder query = new StringBuilder(
 				"SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id");
@@ -93,9 +93,10 @@ public enum ComputerDAO {
 	/*
 	 * Return the list of computers, ordered and limited
 	 */
-	public List<Computer> getList(Connection connection, String orderBy,
-			Integer page, Integer recordsPerPage) throws SQLException {
+	public List<Computer> getList(String orderBy, Integer page,
+			Integer recordsPerPage) throws SQLException {
 
+		Connection connection = ConnectionManager.getConnection();
 		StringBuilder query = new StringBuilder(
 				"SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id");
 		if (orderBy == null) {
@@ -155,8 +156,9 @@ public enum ComputerDAO {
 	 * Add a computer to the database, and return the id auto incremented of the
 	 * computer added
 	 */
-	public Long add(Connection connection, Computer computer)
-			throws SQLException {
+	public Long add(Computer computer) throws SQLException {
+
+		Connection connection = ConnectionManager.getConnection();
 		Long id = null;
 		String query = "INSERT INTO `computer-database-db`.`computer` (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
 		PreparedStatement statement = connection.prepareStatement(query);
@@ -192,10 +194,10 @@ public enum ComputerDAO {
 	/*
 	 * Return the list of computers with a specific name, ordered and limited
 	 */
-	public List<Computer> getListByName(Connection connection,
-			String computerName, String orderBy, Integer page,
-			Integer recordsPerPage) throws SQLException {
+	public List<Computer> getListByName(String computerName, String orderBy,
+			Integer page, Integer recordsPerPage) throws SQLException {
 
+		Connection connection = ConnectionManager.getConnection();
 		StringBuilder query = new StringBuilder(
 				"SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE computer.name=?");
 		if (orderBy == null) {
@@ -255,9 +257,9 @@ public enum ComputerDAO {
 	/*
 	 * Delete a computer from the database
 	 */
-	public void delete(Connection connection, Computer computer)
-			throws SQLException {
+	public void delete(Computer computer) throws SQLException {
 
+		Connection connection = ConnectionManager.getConnection();
 		String query = "DELETE FROM `computer-database-db`.`computer` WHERE id=?;";
 		PreparedStatement statement = connection.prepareStatement(query);
 		statement.setLong(1, computer.getId());
@@ -269,8 +271,9 @@ public enum ComputerDAO {
 	/*
 	 * Edit a computer from the database
 	 */
-	public void edit(Connection connection, Computer computer)
-			throws SQLException {
+	public void edit(Computer computer) throws SQLException {
+
+		Connection connection = ConnectionManager.getConnection();
 		String query = "UPDATE computer SET name =?,introduced=?,discontinued=?,company_id=?  WHERE id=?;";
 		PreparedStatement statement = connection.prepareStatement(query);
 		statement.setString(1, computer.getName());
@@ -297,8 +300,9 @@ public enum ComputerDAO {
 	/*
 	 * Return the number of computers in the database
 	 */
-	public Long count(Connection connection) throws SQLException {
+	public Long count() throws SQLException {
 
+		Connection connection = ConnectionManager.getConnection();
 		String query = "SELECT COUNT(*) FROM `computer-database-db`.computer ;";
 		PreparedStatement statement = connection.prepareStatement(query);
 		ResultSet resultSet = statement.executeQuery();
@@ -316,9 +320,9 @@ public enum ComputerDAO {
 	/*
 	 * Return a computer using its id
 	 */
-	public Computer get(Connection connection, Long computerId)
-			throws SQLException, ParseException {
+	public Computer get(Long computerId) throws SQLException, ParseException {
 
+		Connection connection = ConnectionManager.getConnection();
 		String query = "SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE computer.id=?;";
 		PreparedStatement statement = connection.prepareStatement(query);
 		statement.setLong(1, computerId);
@@ -345,10 +349,11 @@ public enum ComputerDAO {
 	 * Return the list of computers with a specific name and a specific company,
 	 * ordered and limited
 	 */
-	public List<Computer> getListByNameAndCompanyName(Connection connection,
-			String computerName, String computerCompanyName, String orderBy,
-			Integer page, Integer recordsPerPage) throws SQLException {
+	public List<Computer> getListByNameAndCompanyName(String computerName,
+			String computerCompanyName, String orderBy, Integer page,
+			Integer recordsPerPage) throws SQLException {
 
+		Connection connection = ConnectionManager.getConnection();
 		StringBuilder query = new StringBuilder(
 				"SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE computer.name=? AND company.name=?");
 		if (orderBy == null) {
@@ -409,10 +414,11 @@ public enum ComputerDAO {
 	/*
 	 * Return the list of computers with a specific company, ordered and limited
 	 */
-	public List<Computer> getListByCompanyName(Connection connection,
-			String computerCompanyName, String orderBy, Integer page,
-			Integer recordsPerPage) throws SQLException {
+	public List<Computer> getListByCompanyName(String computerCompanyName,
+			String orderBy, Integer page, Integer recordsPerPage)
+			throws SQLException {
 
+		Connection connection = ConnectionManager.getConnection();
 		StringBuilder query = new StringBuilder(
 				"SELECT * FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE company.name=?");
 		if (orderBy == null) {
@@ -472,9 +478,9 @@ public enum ComputerDAO {
 	/*
 	 * Return the number of computers with a specific name in the database
 	 */
-	public Long countByName(Connection connection, String name)
-			throws SQLException {
+	public Long countByName(String name) throws SQLException {
 
+		Connection connection = ConnectionManager.getConnection();
 		String query = "SELECT COUNT(*) FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE computer.name=?;";
 		Long nbrComputers = null;
 		PreparedStatement statement = connection.prepareStatement(query);
@@ -493,9 +499,10 @@ public enum ComputerDAO {
 	 * Return the number of computers with a specific name and a specific
 	 * company in the database
 	 */
-	public Long countByNameAndCompanyName(Connection connection, String name,
-			String companyName) throws SQLException {
+	public Long countByNameAndCompanyName(String name, String companyName)
+			throws SQLException {
 
+		Connection connection = ConnectionManager.getConnection();
 		String query = "SELECT COUNT(*) FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE computer.name=? AND company.name=?";
 		Long nbrComputers = null;
 		PreparedStatement statement = connection.prepareStatement(query);
@@ -514,9 +521,9 @@ public enum ComputerDAO {
 	/*
 	 * Return the number of computers with a specific company in the database
 	 */
-	public Long countByCompanyName(Connection connection, String name)
-			throws SQLException {
+	public Long countByCompanyName(String name) throws SQLException {
 
+		Connection connection = ConnectionManager.getConnection();
 		String query = "SELECT COUNT(*) FROM `computer-database-db`.`computer` AS computer LEFT OUTER JOIN `computer-database-db`.`company` AS company ON computer.company_id=company.id WHERE company.name=? ;";
 		Long nbrComputers = null;
 		PreparedStatement statement = connection.prepareStatement(query);

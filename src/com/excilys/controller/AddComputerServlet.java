@@ -7,12 +7,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.domain.Computer;
+import com.excilys.mapper.DTOMapper;
+import com.excilys.mapper.WrapperMapper;
 import com.excilys.service.CompanyService;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
 import com.excilys.transfert.ComputerDTO;
 import com.excilys.validator.Validator;
-import com.excilys.wrapper.Wrapper;
+import com.excilys.wrapper.ComputerWrapper;
+import com.excilys.wrapper.DTOWrapper;
 
 @SuppressWarnings("serial")
 public class AddComputerServlet extends HttpServlet {
@@ -31,11 +38,13 @@ public class AddComputerServlet extends HttpServlet {
 	public static final String VIEW_GET = "/WEB-INF/addComputer.jsp";
 	public static final ServiceManager serviceManager = ServiceManager
 			.getInstance();
-
-	public static final int recordsPercurrentPage = Wrapper.RECORDS_PER_PAGE;
+	public static final Integer recordsPerPage = DTOWrapper.RECORDS_PER_PAGE;
+	public static Logger logger = LoggerFactory
+			.getLogger(AddComputerServlet.class);
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		logger.debug("Entering AddComptuerServlet doGet.");
 
 		/*
 		 * Get instance of services by serviceManager
@@ -46,17 +55,20 @@ public class AddComputerServlet extends HttpServlet {
 		 * Get the wrapper to return to the JSP. All functions necessary are
 		 * done in the service package.
 		 */
-		Wrapper wrapper = companyService.getAddComputerWrapper();
-
+		ComputerWrapper computerWrapper = companyService.addComputer();
+		WrapperMapper wrapperMapper = new WrapperMapper();
+		DTOWrapper dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
 		/*
 		 * Set attributes and VIEW
 		 */
-		request.setAttribute(ATT_WRAPPER, wrapper);
+		request.setAttribute(ATT_WRAPPER, dtoWrapper);
 		request.getRequestDispatcher(VIEW_GET).forward(request, response);
+		logger.debug("Leaving AddComptuerServlet doGet.");
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		logger.debug("Entering AddComptuerServlet doPost.");
 
 		/*
 		 * Get instance of services by serviceManager
@@ -70,42 +82,50 @@ public class AddComputerServlet extends HttpServlet {
 		String introduced = request.getParameter(PARAM_INTRODUCED);
 		String discontinued = request.getParameter(PARAM_DISCONTINUED);
 		String companyId = request.getParameter(PARAM_COMPANY);
-
-		/*
-		 * Setting computerDTO
-		 */
-		ComputerDTO computerDTO = ComputerDTO.builder().name(name)
-				.introduced(introduced).discontinued(discontinued)
-				.company(new Long(companyId)).build();
-
-		/*
-		 * Get the wrapper to return to the JSP. All functions necessary are
-		 * done in the service package.
-		 */
 		Integer currentPage = 1;
 		if (request.getParameter(PARAM_CURRENT_PAGE) != null) {
 			currentPage = Integer.parseInt(request
 					.getParameter(PARAM_CURRENT_PAGE));
 		}
 
+		/*
+		 * Setting computerDTO
+		 */
+		ComputerDTO computerDTO = ComputerDTO.builder().name(name)
+				.introduced(introduced).discontinued(discontinued)
+				.companyId(new Long(companyId)).build();
+
+		/*
+		 * Call Validator Back function on the DTO
+		 */
 		Validator validator = new Validator();
 		switch (validator.getValidation(computerDTO)) {
+
 		/*
 		 * normal case
 		 */
 		case 0:
 			/*
+			 * Mapping to computer
+			 */
+			DTOMapper mapperDTO = new DTOMapper();
+			Computer computer = mapperDTO.toComputer(computerDTO);
+			/*
 			 * Get the wrapper to return to the JSP. All functions necessary are
 			 * done in the service package.
 			 */
-			Wrapper wrapper = computerService.getAddComputerWrapper(
-					currentPage, computerDTO);
+			ComputerWrapper computerWrapper = computerService.addComputer(
+					currentPage, computer);
+
+			WrapperMapper wrapperMapper = new WrapperMapper();
+			DTOWrapper dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
 
 			/*
 			 * Set attributes and VIEW
 			 */
 			request.setAttribute(ATT_ERROR, false);
-			request.setAttribute(ATT_WRAPPER, wrapper);
+			request.setAttribute(ATT_WRAPPER, dtoWrapper);
+			logger.debug("Leaving AddComptuerServlet doPost. case 0:");
 			request.getRequestDispatcher(VIEW_POST).forward(request, response);
 			break;
 		/*
@@ -115,12 +135,14 @@ public class AddComputerServlet extends HttpServlet {
 			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_NAME,
 					"The name of the computer is a required field.");
+			logger.debug("Leaving AddComptuerServlet doPost. case 1:");
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		case 2:
 			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_INTRODUCED,
 					"Your introduced date is not correct.");
+			logger.debug("Leaving AddComptuerServlet doPost. case 2:");
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		case 3:
@@ -129,12 +151,14 @@ public class AddComputerServlet extends HttpServlet {
 					"The name of the computer is a required field.");
 			request.setAttribute(ATT_ERROR_INTRODUCED,
 					"Your introduced date is not correct.");
+			logger.debug("Leaving AddComptuerServlet doPost. case 3:");
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		case 4:
 			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_DISCONTINUED,
 					"Your discontinued date is not correct.");
+			logger.debug("Leaving AddComptuerServlet doPost. case 4:");
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 
 		case 5:
@@ -143,6 +167,7 @@ public class AddComputerServlet extends HttpServlet {
 					"The name of the computer is a required field.");
 			request.setAttribute(ATT_ERROR_DISCONTINUED,
 					"Your discontinued date is not correct.");
+			logger.debug("Leaving AddComptuerServlet doPost. case 5:");
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		case 6:
@@ -151,6 +176,7 @@ public class AddComputerServlet extends HttpServlet {
 					"Your introduced date is not correct.");
 			request.setAttribute(ATT_ERROR_DISCONTINUED,
 					"Your discontinued date is not correct.");
+			logger.debug("Leaving AddComptuerServlet doPost. case 6:");
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		case 7:
@@ -161,6 +187,7 @@ public class AddComputerServlet extends HttpServlet {
 					"Your introduced date is not correct.");
 			request.setAttribute(ATT_ERROR_DISCONTINUED,
 					"Your discontinued date is not correct.");
+			logger.debug("Leaving AddComptuerServlet doPost. case 7:");
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		}

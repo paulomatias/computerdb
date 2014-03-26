@@ -7,9 +7,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.mapper.WrapperMapper;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
-import com.excilys.wrapper.Wrapper;
+import com.excilys.wrapper.ComputerWrapper;
+import com.excilys.wrapper.DTOWrapper;
 
 @SuppressWarnings("serial")
 public class DashboardServlet extends HttpServlet {
@@ -22,10 +27,13 @@ public class DashboardServlet extends HttpServlet {
 	public static final String VIEW = "/WEB-INF/dashboard.jsp";
 	public static final ServiceManager serviceManager = ServiceManager
 			.getInstance();
-	public static final Integer recordsPercurrentPage = Wrapper.RECORDS_PER_PAGE;
+	public static final Integer recordsPercurrentPage = DTOWrapper.RECORDS_PER_PAGE;
+	public static Logger logger = LoggerFactory
+			.getLogger(DashboardServlet.class);
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		logger.debug("Enterring DashboardServlet doGet.");
 
 		/*
 		 * Get instance of services by serviceManager
@@ -51,7 +59,7 @@ public class DashboardServlet extends HttpServlet {
 		 * Get the wrapper to return to the JSP. All functions necessary are
 		 * done in the service package.
 		 */
-		Wrapper wrapper = null;
+		ComputerWrapper computerWrapper = null;
 		if (searchComputer == null) {
 			searchComputer = "";
 		}
@@ -59,20 +67,31 @@ public class DashboardServlet extends HttpServlet {
 			searchCompany = "";
 		}
 		if (searchComputer.equals("") && searchCompany.equals("")) {
-			wrapper = computerService.getDashboardWrapper(currentPage, orderBy);
+			logger.debug("no search found");
+			computerWrapper = computerService.dashboard(currentPage, orderBy);
 		} else if (!searchComputer.equals("") && searchCompany.equals("")) {
-			wrapper = computerService.getSelectComputerWrapperSearchComputer(
-					orderBy, currentPage, searchComputer);
+			logger.debug("search company");
+			computerWrapper = computerService.dashboardSearchComputer(orderBy,
+					currentPage, searchComputer);
 		} else if ((!searchComputer.equals("") && !searchCompany.equals(""))) {
-			wrapper = computerService
-					.getSelectComputerWrapperSearchCompanySearchComputer(
-							orderBy, currentPage, searchCompany, searchComputer);
+			logger.debug("search computer and company");
+			computerWrapper = computerService
+					.dashboardSearchCompanySearchComputer(orderBy, currentPage,
+							searchCompany, searchComputer);
 		} else if (searchComputer.equals("") && !searchCompany.equals("")) {
-			wrapper = computerService.getSelectComputerWrapperSearchCompany(
-					orderBy, currentPage, searchCompany);
+			logger.debug("search comptuer");
+			computerWrapper = computerService.dashboardSearchCompany(orderBy,
+					currentPage, searchCompany);
 		}
 
-		request.setAttribute(ATT_WRAPPER, wrapper);
+		WrapperMapper wrapperMapper = new WrapperMapper();
+		DTOWrapper dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
+		DTOWrapper.builder().currentPage(currentPage)
+				.searchCompany(searchCompany).searchComputer(searchComputer)
+				.orderBy(orderBy).build();
+
+		request.setAttribute(ATT_WRAPPER, dtoWrapper);
+		logger.debug("Leaving DashboardServlet doGet.");
 		request.getRequestDispatcher(VIEW).forward(request, response);
 
 	}

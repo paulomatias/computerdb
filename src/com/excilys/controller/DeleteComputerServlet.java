@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.mapper.WrapperMapper;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
-import com.excilys.wrapper.Wrapper;
+import com.excilys.wrapper.ComputerWrapper;
+import com.excilys.wrapper.DTOWrapper;
 
 @SuppressWarnings("serial")
 public class DeleteComputerServlet extends HttpServlet {
@@ -20,7 +22,7 @@ public class DeleteComputerServlet extends HttpServlet {
 	public static final String VIEW = "/WEB-INF/dashboard.jsp";
 	public static final ServiceManager serviceManager = ServiceManager
 			.getInstance();
-	public static final Integer recordsPerPage = Wrapper.RECORDS_PER_PAGE;
+	public static final Integer recordsPerPage = DTOWrapper.RECORDS_PER_PAGE;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -44,13 +46,15 @@ public class DeleteComputerServlet extends HttpServlet {
 		 * Get the wrapper to return to the JSP. All functions necessary are
 		 * done in the service package.
 		 */
-		Wrapper wrapper = computerService.getDeleteComputerWrapper(currentPage,
+		ComputerWrapper computerWrapper = computerService.delete(currentPage,
 				computerId);
+		WrapperMapper wrapperMapper = new WrapperMapper();
+		DTOWrapper dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
 
 		/*
 		 * Set attributes and VIEW
 		 */
-		request.setAttribute(ATT_WRAPPER, wrapper);
+		request.setAttribute(ATT_WRAPPER, dtoWrapper);
 		request.getRequestDispatcher(VIEW).forward(request, response);
 
 	}

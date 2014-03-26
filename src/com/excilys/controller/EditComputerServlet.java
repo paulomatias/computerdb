@@ -7,11 +7,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.domain.Computer;
+import com.excilys.mapper.DTOMapper;
+import com.excilys.mapper.WrapperMapper;
 import com.excilys.service.ComputerService;
 import com.excilys.service.ServiceManager;
 import com.excilys.transfert.ComputerDTO;
 import com.excilys.validator.Validator;
-import com.excilys.wrapper.Wrapper;
+import com.excilys.wrapper.ComputerWrapper;
+import com.excilys.wrapper.DTOWrapper;
 
 @SuppressWarnings("serial")
 public class EditComputerServlet extends HttpServlet {
@@ -33,7 +37,7 @@ public class EditComputerServlet extends HttpServlet {
 
 	public static final ServiceManager serviceManager = ServiceManager
 			.getInstance();
-	public static final int recordsPerPage = Wrapper.RECORDS_PER_PAGE;
+	public static final int recordsPerPage = DTOWrapper.RECORDS_PER_PAGE;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -52,12 +56,15 @@ public class EditComputerServlet extends HttpServlet {
 		 * Get the wrapper to return to the JSP. All functions necessary are
 		 * done in the service package.
 		 */
-		Wrapper wrapper = computerService.getEditComputerWrapper(computerId);
-
+		ComputerWrapper computerWrapper = computerService
+				.getEditComputerWrapper(computerId);
+		WrapperMapper wrapperMapper = new WrapperMapper();
+		DTOWrapper dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
 		/*
 		 * Set attributes and VIEW
 		 */
-		request.setAttribute(ATT_WRAPPER, wrapper);
+		System.out.println(dtoWrapper);
+		request.setAttribute(ATT_WRAPPER, dtoWrapper);
 		request.getRequestDispatcher(VIEW_GET).forward(request, response);
 	}
 
@@ -92,9 +99,13 @@ public class EditComputerServlet extends HttpServlet {
 		 */
 		ComputerDTO computerDTO = ComputerDTO.builder().id(computerIdL)
 				.name(name).introduced(introduced).discontinued(discontinued)
-				.company(new Long(companyId)).build();
-
+				.companyId(new Long(companyId)).build();
+		DTOMapper mapperDTO = new DTOMapper();
+		Computer computer = mapperDTO.toComputer(computerDTO);
 		Validator validator = new Validator();
+		ComputerWrapper computerWrapper;
+		WrapperMapper wrapperMapper = new WrapperMapper();
+		DTOWrapper dtoWrapper;
 		switch (validator.getValidation(computerDTO)) {
 		/*
 		 * normal case
@@ -104,14 +115,14 @@ public class EditComputerServlet extends HttpServlet {
 			 * Get the wrapper to return to the JSP. All functions necessary are
 			 * done in the service package.
 			 */
-			Wrapper wrapper = computerService.getEditComputerWrapperPost(
-					currentPage, computerDTO);
+			computerWrapper = computerService.getEditComputerWrapperPost(
+					currentPage, computer);
+			dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
 			/*
 			 * Set attributes and VIEW
 			 */
-			request.getRequestDispatcher(VIEW_POST).forward(request, response);
 			request.setAttribute(ATT_ERROR, false);
-			request.setAttribute(ATT_WRAPPER, wrapper);
+			request.setAttribute(ATT_WRAPPER, dtoWrapper);
 			request.getRequestDispatcher(VIEW_POST).forward(request, response);
 			break;
 		/*
@@ -121,16 +132,20 @@ public class EditComputerServlet extends HttpServlet {
 			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_NAME,
 					"The name of the computer is a required field.");
-			wrapper = computerService.getEditComputerWrapper(computerId);
-			request.setAttribute(ATT_WRAPPER, wrapper);
+			computerWrapper = computerService
+					.getEditComputerWrapper(computerId);
+			dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
+			request.setAttribute(ATT_WRAPPER, dtoWrapper);
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		case 2:
 			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_INTRODUCED,
 					"Your introduced date is not correct.");
-			wrapper = computerService.getEditComputerWrapper(computerId);
-			request.setAttribute(ATT_WRAPPER, wrapper);
+			computerWrapper = computerService
+					.getEditComputerWrapper(computerId);
+			dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
+			request.setAttribute(ATT_WRAPPER, dtoWrapper);
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		case 3:
@@ -139,16 +154,20 @@ public class EditComputerServlet extends HttpServlet {
 					"The name of the computer is a required field.");
 			request.setAttribute(ATT_ERROR_INTRODUCED,
 					"Your introduced date is not correct.");
-			wrapper = computerService.getEditComputerWrapper(computerId);
-			request.setAttribute(ATT_WRAPPER, wrapper);
+			computerWrapper = computerService
+					.getEditComputerWrapper(computerId);
+			dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
+			request.setAttribute(ATT_WRAPPER, dtoWrapper);
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		case 4:
 			request.setAttribute(ATT_ERROR, true);
 			request.setAttribute(ATT_ERROR_DISCONTINUED,
 					"Your discontinued date is not correct.");
-			wrapper = computerService.getEditComputerWrapper(computerId);
-			request.setAttribute(ATT_WRAPPER, wrapper);
+			computerWrapper = computerService
+					.getEditComputerWrapper(computerId);
+			dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
+			request.setAttribute(ATT_WRAPPER, dtoWrapper);
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		case 5:
@@ -157,8 +176,10 @@ public class EditComputerServlet extends HttpServlet {
 					"The name of the computer is a required field.");
 			request.setAttribute(ATT_ERROR_DISCONTINUED,
 					"Your discontinued date is not correct.");
-			wrapper = computerService.getEditComputerWrapper(computerId);
-			request.setAttribute(ATT_WRAPPER, wrapper);
+			computerWrapper = computerService
+					.getEditComputerWrapper(computerId);
+			dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
+			request.setAttribute(ATT_WRAPPER, dtoWrapper);
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		case 6:
@@ -167,8 +188,10 @@ public class EditComputerServlet extends HttpServlet {
 					"Your introduced date is not correct.");
 			request.setAttribute(ATT_ERROR_DISCONTINUED,
 					"Your discontinued date is not correct.");
-			wrapper = computerService.getEditComputerWrapper(computerId);
-			request.setAttribute(ATT_WRAPPER, wrapper);
+			computerWrapper = computerService
+					.getEditComputerWrapper(computerId);
+			dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
+			request.setAttribute(ATT_WRAPPER, dtoWrapper);
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		case 7:
@@ -179,8 +202,10 @@ public class EditComputerServlet extends HttpServlet {
 					"Your introduced date is not correct.");
 			request.setAttribute(ATT_ERROR_DISCONTINUED,
 					"Your discontinued date is not correct.");
-			wrapper = computerService.getEditComputerWrapper(computerId);
-			request.setAttribute(ATT_WRAPPER, wrapper);
+			computerWrapper = computerService
+					.getEditComputerWrapper(computerId);
+			dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
+			request.setAttribute(ATT_WRAPPER, dtoWrapper);
 			request.getRequestDispatcher(VIEW_GET).forward(request, response);
 			break;
 		}

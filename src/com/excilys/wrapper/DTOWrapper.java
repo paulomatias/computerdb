@@ -2,11 +2,10 @@ package com.excilys.wrapper;
 
 import java.util.List;
 
-import com.excilys.domain.Company;
-import com.excilys.domain.Computer;
+import com.excilys.transfert.CompanyDTO;
 import com.excilys.transfert.ComputerDTO;
 
-public class Wrapper {
+public class DTOWrapper {
 	public static final Integer RECORDS_PER_PAGE = 25;
 	private Integer recordsPerPage;
 	private Integer nbrOfPages;
@@ -17,73 +16,84 @@ public class Wrapper {
 	private String orderBy;
 	private Long nbrComputers;
 	private ComputerDTO computerDTO;
-	private List<Company> listCompanies;
-	private List<Computer> listComputers;
+	private List<CompanyDTO> listCompaniesDTO;
+	private List<ComputerDTO> listComputersDTO;
 
 	public static class Builder {
-		Wrapper computerWrapper;
+		DTOWrapper dtoWrapper;
 
 		private Builder() {
-			computerWrapper = new Wrapper();
+			dtoWrapper = new DTOWrapper();
 		}
 
 		public Builder recordsPerPage(Integer recordsPerPage) {
-			this.computerWrapper.recordsPerPage = recordsPerPage;
+			if (recordsPerPage != null)
+				this.dtoWrapper.recordsPerPage = recordsPerPage;
 			return this;
 		}
 
 		public Builder nbrOfPages(Integer nbrOfPages) {
-			this.computerWrapper.nbrOfPages = nbrOfPages;
+			if (nbrOfPages != null)
+				this.dtoWrapper.nbrOfPages = nbrOfPages;
 			return this;
 		}
 
 		public Builder currentPage(Integer currentPage) {
-			this.computerWrapper.currentPage = currentPage;
+			if (currentPage != null)
+				this.dtoWrapper.currentPage = currentPage;
 			return this;
 		}
 
 		public Builder message(String message) {
-			this.computerWrapper.message = message;
+			if (message != null)
+				this.dtoWrapper.message = message;
 			return this;
 		}
 
 		public Builder searchCompany(String searchCompany) {
-			this.computerWrapper.searchCompany = searchCompany;
+			if (searchCompany != null)
+				this.dtoWrapper.searchCompany = searchCompany;
 			return this;
 		}
 
 		public Builder searchComputer(String searchComputer) {
-			this.computerWrapper.searchComputer = searchComputer;
+			if (searchComputer != null)
+				this.dtoWrapper.message = searchComputer;
 			return this;
 		}
 
 		public Builder orderBy(String orderBy) {
-			this.computerWrapper.orderBy = orderBy;
+			if (orderBy != null)
+				this.dtoWrapper.orderBy = orderBy;
 			return this;
 		}
 
 		public Builder nbrComputers(Long nbrComputers) {
-			this.computerWrapper.nbrComputers = nbrComputers;
+			if (nbrComputers != null)
+				this.dtoWrapper.nbrComputers = nbrComputers;
 			return this;
 		}
 
 		public Builder computerDTO(ComputerDTO computerDTO) {
-			this.computerWrapper.computerDTO = computerDTO;
+			if (computerDTO != null)
+				this.dtoWrapper.computerDTO = computerDTO;
 			return this;
 		}
 
-		public Builder listCompanies(List<Company> listCompanies) {
-			this.computerWrapper.listCompanies = listCompanies;
+		public Builder listCompaniesDTO(List<CompanyDTO> listCompaniesDTO) {
+			if (listCompaniesDTO != null)
+				this.dtoWrapper.listCompaniesDTO = listCompaniesDTO;
 			return this;
 		}
 
-		public Builder listComputers(List<Computer> listComputers) {
-			this.computerWrapper.listComputers = listComputers;
+		public Builder listComputersDTO(List<ComputerDTO> listComputersDTO) {
+			if (listComputersDTO != null)
+				this.dtoWrapper.listComputersDTO = listComputersDTO;
 			return this;
 		}
 
-		public Wrapper build() {
-			return this.computerWrapper;
+		public DTOWrapper build() {
+			return this.dtoWrapper;
 		}
 	}
 
@@ -163,46 +173,47 @@ public class Wrapper {
 		this.computerDTO = computerDTO;
 	}
 
-	public List<Company> getListCompanies() {
-		return listCompanies;
+	public List<CompanyDTO> getListCompaniesDTO() {
+		return listCompaniesDTO;
 	}
 
-	public void setListCompanies(List<Company> listCompanies) {
-		this.listCompanies = listCompanies;
+	public void setListCompaniesDTO(List<CompanyDTO> listCompaniesDTO) {
+		this.listCompaniesDTO = listCompaniesDTO;
 	}
 
-	public List<Computer> getListComputers() {
-		return listComputers;
+	public List<ComputerDTO> getListComputersDTO() {
+		return listComputersDTO;
 	}
 
-	public void setListComputers(List<Computer> listComputers) {
-		this.listComputers = listComputers;
+	public void setListComputersDTO(List<ComputerDTO> listComputersDTO) {
+		this.listComputersDTO = listComputersDTO;
 	}
 
 	@Override
 	public String toString() {
-		return "Wrapper [recordsPerPage=" + recordsPerPage + ", nbrOfPages="
+		return "DTOWrapper [recordsPerPage=" + recordsPerPage + ", nbrOfPages="
 				+ nbrOfPages + ", currentPage=" + currentPage + ", message="
 				+ message + ", searchCompany=" + searchCompany
 				+ ", searchComputer=" + searchComputer + ", orderBy=" + orderBy
 				+ ", nbrComputers=" + nbrComputers + ", computerDTO="
-				+ computerDTO + ", listCompanies=" + listCompanies
-				+ ", listComputers=" + listComputers + "]";
+				+ computerDTO + ", listCompaniesDTO=" + listCompaniesDTO
+				+ ", listComputersDTO=" + listComputersDTO + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-
 		result = prime * result
 				+ ((computerDTO == null) ? 0 : computerDTO.hashCode());
 		result = prime * result
 				+ ((currentPage == null) ? 0 : currentPage.hashCode());
-		result = prime * result
-				+ ((listCompanies == null) ? 0 : listCompanies.hashCode());
-		result = prime * result
-				+ ((listComputers == null) ? 0 : listComputers.hashCode());
+		result = prime
+				* result
+				+ ((listCompaniesDTO == null) ? 0 : listCompaniesDTO.hashCode());
+		result = prime
+				* result
+				+ ((listComputersDTO == null) ? 0 : listComputersDTO.hashCode());
 		result = prime * result + ((message == null) ? 0 : message.hashCode());
 		result = prime * result
 				+ ((nbrComputers == null) ? 0 : nbrComputers.hashCode());
@@ -226,7 +237,7 @@ public class Wrapper {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Wrapper other = (Wrapper) obj;
+		DTOWrapper other = (DTOWrapper) obj;
 		if (computerDTO == null) {
 			if (other.computerDTO != null)
 				return false;
@@ -237,15 +248,15 @@ public class Wrapper {
 				return false;
 		} else if (!currentPage.equals(other.currentPage))
 			return false;
-		if (listCompanies == null) {
-			if (other.listCompanies != null)
+		if (listCompaniesDTO == null) {
+			if (other.listCompaniesDTO != null)
 				return false;
-		} else if (!listCompanies.equals(other.listCompanies))
+		} else if (!listCompaniesDTO.equals(other.listCompaniesDTO))
 			return false;
-		if (listComputers == null) {
-			if (other.listComputers != null)
+		if (listComputersDTO == null) {
+			if (other.listComputersDTO != null)
 				return false;
-		} else if (!listComputers.equals(other.listComputers))
+		} else if (!listComputersDTO.equals(other.listComputersDTO))
 			return false;
 		if (message == null) {
 			if (other.message != null)
@@ -284,5 +295,4 @@ public class Wrapper {
 			return false;
 		return true;
 	}
-
 }
