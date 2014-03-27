@@ -83,7 +83,6 @@ public class DashboardServlet extends HttpServlet {
 			computerWrapper = computerService.dashboardSearchCompany(orderBy,
 					currentPage, searchCompany);
 		}
-
 		WrapperMapper wrapperMapper = new WrapperMapper();
 		DTOWrapper dtoWrapper = wrapperMapper.toDTOWrapper(computerWrapper);
 		DTOWrapper.builder().currentPage(currentPage)

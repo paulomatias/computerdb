@@ -12,6 +12,7 @@ import com.excilys.wrapper.DTOWrapper;
 
 public class WrapperMapper {
 
+	@SuppressWarnings("null")
 	public DTOWrapper toDTOWrapper(ComputerWrapper computerWrapper) {
 		DTOWrapper dtoWrapper;
 		if (computerWrapper != null) {
@@ -32,7 +33,6 @@ public class WrapperMapper {
 					listCompaniesDTO.add(cDTO);
 				}
 			}
-
 			dtoWrapper = DTOWrapper.builder()
 					.recordsPerPage(DTOWrapper.RECORDS_PER_PAGE)
 					.nbrOfPages(computerWrapper.getNbrOfPages())

@@ -58,7 +58,7 @@ public class DTOWrapper {
 
 		public Builder searchComputer(String searchComputer) {
 			if (searchComputer != null)
-				this.dtoWrapper.message = searchComputer;
+				this.dtoWrapper.searchComputer = searchComputer;
 			return this;
 		}
 

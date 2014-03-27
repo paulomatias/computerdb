@@ -53,8 +53,9 @@ public enum ComputerService {
 					currentPage, recordsPerPage);
 			String message = "Welcome to your computer database !";
 			wrapper = ComputerWrapper.builder().currentPage(currentPage)
-					.listComputers(listComputers).nbrOfPages(nbrOfPages)
-					.message(message).orderBy(orderBy).build();
+					.listComputers(listComputers).nbrComputers(nbrComputers)
+					.nbrOfPages(nbrOfPages).message(message).orderBy(orderBy)
+					.build();
 			ConnectionManager.getConnection().commit();
 			log.info("Transactions successful\n");
 		} catch (SQLException e) {
@@ -290,13 +291,14 @@ public enum ComputerService {
 					.getListByNameAndCompanyName(searchComputer, searchCompany,
 							orderBy, currentPage, recordsPerPage);
 			Long nbrComputers = computerDAO.countByNameAndCompanyName(
-					searchCompany, searchCompany);
+					searchComputer, searchCompany);
 			String message = "Computer(s) selected successfully !";
 			int nbrOfPages = (int) Math.ceil(nbrComputers * 1.0
 					/ recordsPerPage);
-			wrapper = ComputerWrapper.builder().currentPage(currentPage)
-					.nbrOfPages(nbrOfPages).listComputers(listComputers)
-					.nbrComputers(nbrComputers).searchComputer(searchComputer)
+			wrapper = ComputerWrapper.builder().nbrComputers(nbrComputers)
+					.currentPage(currentPage).nbrOfPages(nbrOfPages)
+					.listComputers(listComputers).nbrComputers(nbrComputers)
+					.searchComputer(searchComputer)
 					.searchCompany(searchCompany).orderBy(orderBy)
 					.message(message).build();
 			log.info("Transaction successful\n");
